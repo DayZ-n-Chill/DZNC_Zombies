@@ -1,0 +1,5 @@
+//<'DZNC_Zombies.pbo' properties via Mikero's dos tools, dll version 8.12>
+product=dayz ugc;
+prefix=DZNC_Zombies;
+//PboType=Arma Addon;
+//</properties>
