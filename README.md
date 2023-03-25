@@ -1,4 +1,4 @@
-![alt text](https://repository-images.githubusercontent.com/614083468/381a7a53-19c0-4cd0-be63-a15c869a6c16 "Cherno 2035")
+![alt text](https://steamuserimages-a.akamaihd.net/ugc/1787342881622782546/AF49949CEFA5E6D3EE4A78D04369A38885E74D36/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=#000000&letterbox=false "DayZ Glowing Zombie Eyes")
 
 #DayZ n Chill's Glowing Zombies Eyes
 ##About The Mod!
