@@ -7,8 +7,10 @@ modded class ZombieBase
 	static ref array<ZombieBase> s_DZNC_All = new array<ZombieBase>;
 
 	protected int m_DZNC_EyeColor;
+	protected int m_DZNC_EyeIntensity = DZNC_Eyes.INTENSITY_DEFAULT;
 	// -1 means the material on the model is unknown (DZNC_ classes bake a glow rvmat), so the first apply always runs.
 	protected int m_DZNC_AppliedEyeColor = -1;
+	protected int m_DZNC_AppliedEyeIntensity = -1;
 	protected string m_DZNC_SettingsKey;
 	protected bool m_DZNC_SettingsKeyResolved;
 
@@ -16,6 +18,7 @@ modded class ZombieBase
 	{
 		super.Init();
 		RegisterNetSyncVariableInt("m_DZNC_EyeColor", 0, DZNC_Eyes.COLOR_NAMES.Count() - 1);
+		RegisterNetSyncVariableInt("m_DZNC_EyeIntensity", DZNC_Eyes.INTENSITY_MIN, DZNC_Eyes.INTENSITY_MAX);
 	}
 
 	override void EEInit()
@@ -28,6 +31,7 @@ modded class ZombieBase
 		if (GetGame().IsServer())
 		{
 			s_DZNC_All.Insert(this);
+			m_DZNC_EyeIntensity = DZNC_EyeSettings.Get().GetIntensity();
 			DZNC_SetEyeColor(DZNC_EyeSettings.Get().GetColor(DZNC_GetSettingsKey()));
 		}
 		else
@@ -84,6 +88,23 @@ modded class ZombieBase
 		}
 	}
 
+	// Called by the admin menu when the global eye brightness changes.
+	static void DZNC_ApplyIntensity(int intensity)
+	{
+		foreach (ZombieBase zombie : s_DZNC_All)
+		{
+			if (zombie)
+				zombie.DZNC_SetEyeIntensity(intensity);
+		}
+	}
+
+	void DZNC_SetEyeIntensity(int intensity)
+	{
+		m_DZNC_EyeIntensity = DZNC_Eyes.ClampIntensity(intensity);
+		DZNC_ApplyEyes();
+		SetSynchDirty();
+	}
+
 	void DZNC_SetEyeColor(int color)
 	{
 		m_DZNC_EyeColor = color;
@@ -118,10 +139,15 @@ modded class ZombieBase
 			m_DZNC_AppliedEyeColor = 0;
 
 		if (m_DZNC_EyeColor == m_DZNC_AppliedEyeColor)
-			return;
+		{
+			// Vanilla eyes ignore brightness, so only a glow color needs re-applying for a new step.
+			if (!DZNC_Eyes.IsColor(m_DZNC_EyeColor) || m_DZNC_EyeIntensity == m_DZNC_AppliedEyeIntensity)
+				return;
+		}
 
 		m_DZNC_AppliedEyeColor = m_DZNC_EyeColor;
-		SetObjectMaterial(0, DZNC_Eyes.GetMaterial(key, m_DZNC_EyeColor));
+		m_DZNC_AppliedEyeIntensity = m_DZNC_EyeIntensity;
+		SetObjectMaterial(0, DZNC_Eyes.GetMaterial(key, m_DZNC_EyeColor, m_DZNC_EyeIntensity));
 	}
 
 	bool DZNC_IsGlowZombie()

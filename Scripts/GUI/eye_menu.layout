@@ -1,7 +1,7 @@
 PanelWidgetClass DZNC_EyeMenuRoot {
  color 0.09 0.09 0.09 0.94
  position 40 40
- size 560 630
+ size 560 674
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -641,9 +641,54 @@ ButtonWidgetClass RandomizeAll {
   }
  }
 }
-TextWidgetClass Summary {
+TextWidgetClass BrightnessTitle {
  ignorepointer 1
  position 16 568
+ size 170 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "EYE BRIGHTNESS"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 18
+ "text halign" left
+ "text valign" center
+}
+SliderWidgetClass BrightnessSlider {
+ color 1 1 1 0.549
+ position 190 574
+ size 230 24
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style Default
+ maximum 5
+ step 1
+ current 3
+ "fill in" 1
+ "listen to input" 1
+}
+TextWidgetClass BrightnessValue {
+ ignorepointer 1
+ position 430 568
+ size 114 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Normal (3/5)"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 17
+ "text halign" right
+ "text valign" center
+}
+TextWidgetClass Summary {
+ ignorepointer 1
+ position 16 612
  size 528 26
  hexactpos 1
  vexactpos 1
@@ -659,7 +704,7 @@ TextWidgetClass Summary {
 TextWidgetClass SpinHint {
  ignorepointer 1
  color 0.7 0.7 0.7 1
- position 16 598
+ position 16 642
  size 528 24
  hexactpos 1
  vexactpos 1

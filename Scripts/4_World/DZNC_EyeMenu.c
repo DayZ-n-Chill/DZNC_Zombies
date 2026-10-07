@@ -18,12 +18,16 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	static const float PREVIEW_TOP = 0.08;
 	static const float PREVIEW_BOTTOM = 0.92;
 	static const float PREVIEW_MAX_ANGLE = 1.4;
+	static const int INTENSITY_MIN = 1;
+	static const int INTENSITY_MAX = 5;
+	static ref TStringArray INTENSITY_NAMES = {"", "Dim", "Low", "Normal", "Bright", "Max"};
 
 	protected ref array<int> m_Colors;
 	protected ref array<int> m_ListTypes = new array<int>;	// list row -> zombie index
 	protected int m_Index;
 	protected int m_LastGlowColor = 1;
 	protected int m_BulkColor = 1;
+	protected int m_Intensity = 3;
 	protected bool m_ChangedOnly;
 	protected float m_ResetConfirmTimer;
 	protected bool m_FillingList;
@@ -54,15 +58,17 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	protected Widget m_BulkColorSwatch;
 	protected ButtonWidget m_SetAll;
 	protected ButtonWidget m_ResetAll;
+	protected SliderWidget m_BrightnessSlider;
+	protected TextWidget m_BrightnessValue;
 	protected TextWidget m_Summary;
 
-	static void Open(array<int> colors)
+	static void Open(array<int> colors, int intensity)
 	{
 		DZNC_EyeMenu menu = DZNC_EyeMenu.Cast(GetGame().GetUIManager().FindMenu(MENU_ID));
 		if (!menu)
 			menu = DZNC_EyeMenu.Cast(GetGame().GetUIManager().EnterScriptedMenu(MENU_ID, null));
 		if (menu)
-			menu.SetColors(colors);
+			menu.SetColors(colors, intensity);
 	}
 
 	static bool IsOpen()
@@ -90,6 +96,10 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		m_SetAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("SetAll"));
 		m_ResetAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ResetAll"));
 		m_Summary = TextWidget.Cast(layoutRoot.FindAnyWidget("Summary"));
+		m_BrightnessSlider = SliderWidget.Cast(layoutRoot.FindAnyWidget("BrightnessSlider"));
+		m_BrightnessValue = TextWidget.Cast(layoutRoot.FindAnyWidget("BrightnessValue"));
+		m_BrightnessSlider.SetMinMax(INTENSITY_MIN, INTENSITY_MAX);
+		m_BrightnessSlider.SetStep(1);
 		return layoutRoot;
 	}
 
@@ -111,9 +121,11 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.CLOSE_PREVIEW, true);
 	}
 
-	void SetColors(array<int> colors)
+	void SetColors(array<int> colors, int intensity)
 	{
 		m_Colors = colors;
+		m_Intensity = Math.Clamp(intensity, INTENSITY_MIN, INTENSITY_MAX);
+		m_BrightnessSlider.SetCurrent(m_Intensity);
 		ShowPreview();
 		RefreshList();
 		RefreshAll();
@@ -182,14 +194,33 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		return false;
 	}
 
-	// The list narrows down with every key typed into the search box.
 	override bool OnChange(Widget w, int x, int y, bool finished)
 	{
-		if (w != m_SearchBox)
-			return super.OnChange(w, x, y, finished);
+		// The list narrows down with every key typed into the search box.
+		if (w == m_SearchBox)
+		{
+			RefreshList();
+			return true;
+		}
 
-		RefreshList();
-		return true;
+		// The brightness slider snaps to whole steps; the server hears about each new step once.
+		if (w == m_BrightnessSlider)
+		{
+			int step = Math.Round(m_BrightnessSlider.GetCurrent());
+			step = Math.Clamp(step, INTENSITY_MIN, INTENSITY_MAX);
+			m_BrightnessSlider.SetCurrent(step);
+			if (step != m_Intensity)
+			{
+				m_Intensity = step;
+				ScriptRPC rpc = new ScriptRPC();
+				rpc.Write(m_Intensity);
+				rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.SET_INTENSITY, true);
+				RefreshAll();
+			}
+			return true;
+		}
+
+		return super.OnChange(w, x, y, finished);
 	}
 
 	override bool OnItemSelected(Widget w, int x, int y, int row, int column, int oldRow, int oldColumn)
@@ -384,6 +415,7 @@ class DZNC_EyeMenu extends UIScriptedMenu
 			Label(m_ResetAll, "CLICK AGAIN TO CONFIRM");
 		else
 			Label(m_ResetAll, "RESET ALL TO VANILLA");
+		m_BrightnessValue.SetText(INTENSITY_NAMES[m_Intensity] + " (" + m_Intensity + "/" + INTENSITY_MAX + ")");
 
 		int glowing;
 		foreach (int c : m_Colors)

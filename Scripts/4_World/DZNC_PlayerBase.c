@@ -21,6 +21,9 @@ modded class PlayerBase
 			case DZNC_EyeRPC.SET_MANY:
 				DZNC_OnSetMany(sender, ctx);
 				break;
+			case DZNC_EyeRPC.SET_INTENSITY:
+				DZNC_OnSetIntensity(sender, ctx);
+				break;
 			case DZNC_EyeRPC.SHOW_PREVIEW:
 				DZNC_OnShowPreview(sender, ctx);
 				break;
@@ -57,6 +60,7 @@ modded class PlayerBase
 		foreach (string type : DZNC_Eyes.ZOMBIE_TYPES)
 			colors.Insert(settings.GetColor(type));
 		rpc.Write(colors);
+		rpc.Write(settings.GetIntensity());
 		rpc.Send(this, DZNC_EyeRPC.MENU_DATA, true, sender);
 		Print("[DZNC_Zombies] Opened eye menu for admin " + sender.GetPlainId());
 	}
@@ -100,6 +104,22 @@ modded class PlayerBase
 		}
 		DZNC_EyeSettings.Get().Save();
 		Print("[DZNC_Zombies] " + sender.GetPlainId() + " set " + changed + " zombie types to " + DZNC_Eyes.COLOR_NAMES[color] + " eyes");
+	}
+
+	protected void DZNC_OnSetIntensity(PlayerIdentity sender, ParamsReadContext ctx)
+	{
+		if (!GetGame().IsServer() || !DZNC_EyeSettings.Get().IsAdmin(sender))
+			return;
+
+		int intensity;
+		if (!ctx.Read(intensity))
+			return;
+
+		DZNC_EyeSettings settings = DZNC_EyeSettings.Get();
+		settings.SetIntensity(intensity);
+		settings.Save();
+		ZombieBase.DZNC_ApplyIntensity(settings.GetIntensity());
+		Print("[DZNC_Zombies] " + sender.GetPlainId() + " set eye brightness to " + settings.GetIntensity());
 	}
 
 	// Spawns a frozen zombie where the admin's menu shows it inside the preview frame, so the eyes can be
@@ -160,13 +180,14 @@ modded class PlayerBase
 	protected void DZNC_OnMenuData(ParamsReadContext ctx)
 	{
 		array<int> colors = new array<int>;
-		if (!ctx.Read(colors))
+		int intensity;
+		if (!ctx.Read(colors) || !ctx.Read(intensity))
 		{
 			Print("[DZNC_Zombies] Could not read eye menu data");
 			return;
 		}
 
 		Print("[DZNC_Zombies] Eye menu data received for " + colors.Count() + " zombie types");
-		DZNC_EyeMenu.Open(colors);
+		DZNC_EyeMenu.Open(colors, intensity);
 	}
 }

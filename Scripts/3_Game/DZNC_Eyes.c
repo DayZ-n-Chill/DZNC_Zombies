@@ -9,11 +9,17 @@ enum DZNC_EyeRPC
 	SHOW_PREVIEW,				// client -> server: spawn a preview zombie at a given spot and yaw near the admin
 	CLOSE_PREVIEW,				// client -> server: remove it
 	SET_MANY,					// client -> server: change a batch of zombie types at once
-	ROTATE_PREVIEW				// client -> server: spin the preview zombie
+	ROTATE_PREVIEW,				// client -> server: spin the preview zombie
+	SET_INTENSITY				// client -> server: change the global eye brightness step
 }
 
 class DZNC_Eyes
 {
+	// Brightness steps. Each glow material exists once per step, 3 is the original brightness.
+	static const int INTENSITY_MIN = 1;
+	static const int INTENSITY_MAX = 5;
+	static const int INTENSITY_DEFAULT = 3;
+
 	// Index 0 leaves the zombie looking vanilla.
 	static ref TStringArray COLOR_NAMES = {"Vanilla", "Yellow", "Red", "Blue", "Green", "Orange"};
 	static ref array<int> COLOR_ARGB = {0xFF808080, 0xFFFFE000, 0xFFFF2020, 0xFF2080FF, 0xFF20FF40, 0xFFFF8000};
@@ -206,6 +212,15 @@ class DZNC_Eyes
 		return color > 0 && color < COLOR_NAMES.Count();
 	}
 
+	static int ClampIntensity(int intensity)
+	{
+		if (intensity < INTENSITY_MIN)
+			return INTENSITY_MIN;
+		if (intensity > INTENSITY_MAX)
+			return INTENSITY_MAX;
+		return intensity;
+	}
+
 	// Vanilla type -> file name of its vanilla body material, e.g. "hermit".
 	private static ref map<string, string> s_BodyBases = new map<string, string>;
 
@@ -243,21 +258,22 @@ class DZNC_Eyes
 		return base;
 	}
 
-	// Each vanilla body has its own copy of its material per glow color in data\bodies.
-	static string GetMaterial(string type, int color)
+	// Each vanilla body has its own copy of its material per glow color and brightness step in data\bodies.
+	static string GetMaterial(string type, int color, int intensity)
 	{
 		if (!IsColor(color))
 			return GetVanillaMaterial(type);
 
 		string colorName = COLOR_NAMES[color];
 		colorName.ToLower();
-		return "DZNC_Zombies\\data\\bodies\\" + GetBodyBase(type) + "_" + colorName + ".rvmat";
+		return "DZNC_Zombies\\data\\bodies\\" + GetBodyBase(type) + "_" + colorName + "_" + ClampIntensity(intensity) + ".rvmat";
 	}
 }
 
 class DZNC_EyeSettingsData
 {
 	ref map<string, int> ZombieEyes = new map<string, int>;
+	int Intensity = DZNC_Eyes.INTENSITY_DEFAULT;
 }
 
 class DZNC_AdminData
@@ -295,6 +311,8 @@ class DZNC_EyeSettings
 		string error;
 		if (FileExist(SETTINGS_FILE) && !JsonFileLoader<DZNC_EyeSettingsData>.LoadFile(SETTINGS_FILE, m_Data, error))
 			Print("[DZNC_Zombies] " + error);
+		// Files written before brightness existed have no Intensity field and keep the default.
+		m_Data.Intensity = DZNC_Eyes.ClampIntensity(m_Data.Intensity);
 		if (!FileExist(ADMINS_FILE))
 			JsonFileLoader<DZNC_AdminData>.SaveFile(ADMINS_FILE, m_Admins, error);
 		else if (!JsonFileLoader<DZNC_AdminData>.LoadFile(ADMINS_FILE, m_Admins, error))
@@ -324,5 +342,15 @@ class DZNC_EyeSettings
 			m_Data.ZombieEyes.Set(type, color);
 		else
 			m_Data.ZombieEyes.Remove(type);
+	}
+
+	int GetIntensity()
+	{
+		return m_Data.Intensity;
+	}
+
+	void SetIntensity(int intensity)
+	{
+		m_Data.Intensity = DZNC_Eyes.ClampIntensity(intensity);
 	}
 }
