@@ -1,0 +1,676 @@
+PanelWidgetClass DZNC_EyeMenuRoot {
+ color 0.09 0.09 0.09 0.94
+ position 40 40
+ size 560 630
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ priority 900
+ style rover_sim_colorable
+ {
+PanelWidgetClass Header {
+ ignorepointer 1
+ color 0.7843 0.0627 0.1804 1
+ position 0 0
+ size 560 50
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+ {
+TextWidgetClass Title {
+ ignorepointer 1
+ position 0 0
+ size 560 50
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "ZOMBIE EYES"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 28
+ "text halign" center
+ "text valign" center
+}
+ }
+}
+ButtonWidgetClass Close {
+ color 0 0 0 0
+ position 514 8
+ size 36 34
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass Close_bg {
+   ignorepointer 1
+   color 0.3 0.05 0.08 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass Close_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "X"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 26
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+FrameWidgetClass ListPanel {
+ position 16 60
+ size 528 300
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+ButtonWidgetClass FilterChanged {
+ color 0 0 0 0
+ position 0 0
+ size 528 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass FilterChanged_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass FilterChanged_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "SHOWING: ALL ZOMBIES"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 16
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+PanelWidgetClass SearchBg {
+ ignorepointer 1
+ color 0.16 0.16 0.16 1
+ position 0 44
+ size 528 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+}
+TextWidgetClass SearchHint {
+ ignorepointer 1
+ color 0.55 0.55 0.55 1
+ position 10 44
+ size 508 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Type to search by name..."
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 16
+ "text halign" left
+ "text valign" center
+}
+EditBoxWidgetClass SearchBox {
+ position 10 44
+ size 508 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 18
+}
+TextListboxWidgetClass ZombieList {
+ clipchildren 1
+ position 0 88
+ size 528 118
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style Default
+ "title visible" 0
+ colums "Zombie;68;Eyes;32;"
+ lines 5
+ font "gui/fonts/Metron16"
+}
+ButtonWidgetClass ListModeVanilla {
+ color 0 0 0 0
+ position 0 214
+ size 128 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass ListModeVanilla_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass ListModeVanilla_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "VANILLA"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 16
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+ButtonWidgetClass ListModeGlow {
+ color 0 0 0 0
+ position 136 214
+ size 128 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass ListModeGlow_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass ListModeGlow_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "GLOWING"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 16
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+FrameWidgetClass ListColorRow {
+ position 272 214
+ size 256 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+ButtonWidgetClass ListPrevColor {
+ color 0 0 0 0
+ position 0 0
+ size 36 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass ListPrevColor_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass ListPrevColor_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "<"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 22
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+PanelWidgetClass ListColorSwatch {
+ ignorepointer 1
+ color 1 1 0 1
+ position 48 8
+ size 20 20
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+}
+TextWidgetClass ListColorName {
+ ignorepointer 1
+ position 76 0
+ size 132 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Yellow"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 18
+ "text halign" left
+ "text valign" center
+}
+ButtonWidgetClass ListNextColor {
+ color 0 0 0 0
+ position 220 0
+ size 36 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass ListNextColor_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass ListNextColor_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text ">"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 22
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+ }
+}
+ButtonWidgetClass ListApplyFamily {
+ color 0 0 0 0
+ position 0 258
+ size 528 36
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass ListApplyFamily_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass ListApplyFamily_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "APPLY TO ALL OUTFITS OF THIS ZOMBIE"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 16
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+ }
+}
+PanelWidgetClass Divider {
+ ignorepointer 1
+ color 0.4 0.4 0.4 1
+ position 16 370
+ size 528 2
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+}
+TextWidgetClass BulkTitle {
+ ignorepointer 1
+ position 16 378
+ size 528 28
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "ALL ZOMBIES AT ONCE"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 18
+ "text halign" center
+ "text valign" center
+}
+FrameWidgetClass BulkRow {
+ position 16 410
+ size 528 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+ButtonWidgetClass BulkPrevColor {
+ color 0 0 0 0
+ position 0 0
+ size 54 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass BulkPrevColor_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass BulkPrevColor_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "<"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 26
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+ButtonWidgetClass BulkNextColor {
+ color 0 0 0 0
+ position 474 0
+ size 54 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass BulkNextColor_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass BulkNextColor_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text ">"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 26
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+PanelWidgetClass BulkColorSwatch {
+ ignorepointer 1
+ color 1 1 0 1
+ position 184 7
+ size 30 30
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+}
+TextWidgetClass BulkColorName {
+ ignorepointer 1
+ position 224 0
+ size 160 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Yellow"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 22
+ "text halign" left
+ "text valign" center
+}
+ }
+}
+ButtonWidgetClass SetAll {
+ color 0 0 0 0
+ position 16 464
+ size 258 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass SetAll_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass SetAll_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "SET ALL"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 18
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+ButtonWidgetClass ResetAll {
+ color 0 0 0 0
+ position 286 464
+ size 258 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass ResetAll_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass ResetAll_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "RESET ALL TO VANILLA"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 18
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+ButtonWidgetClass RandomizeAll {
+ color 0 0 0 0
+ position 16 516
+ size 528 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
+  PanelWidgetClass RandomizeAll_bg {
+   ignorepointer 1
+   color 0.23 0.23 0.23 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_colorable
+  }
+  TextWidgetClass RandomizeAll_label {
+   ignorepointer 1
+   position 0 0
+   size 1 1
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   text "RANDOMIZE ALL COLORS"
+   font "gui/fonts/sdf_MetronBook24"
+   "exact text" 1
+   "exact text size" 18
+   "text halign" center
+   "text valign" center
+  }
+ }
+}
+TextWidgetClass Summary {
+ ignorepointer 1
+ position 16 568
+ size 528 26
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text ""
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 17
+ "text halign" center
+ "text valign" center
+}
+TextWidgetClass SpinHint {
+ ignorepointer 1
+ color 0.7 0.7 0.7 1
+ position 16 598
+ size 528 24
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Drag outside the menu to spin the zombie"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 15
+ "text halign" center
+ "text valign" center
+}
+ }
+}

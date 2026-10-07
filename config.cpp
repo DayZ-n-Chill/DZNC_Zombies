@@ -25,12 +25,23 @@ class CfgMods
 		extra = 0;
 		type = "mod";
 
+		inputs = "DZNC_Zombies/Scripts/inputs.xml";
 		class defs
 		{
+			class gameScriptModule
+			{
+				value = "";
+				files[] = {"DZNC_Zombies/Scripts/3_Game"};
+			};
 			class worldScriptModule
 			{
 				value = "";
-				files[] = {"DZNC_Zombies/WorldScripts"};
+				files[] = {"DZNC_Zombies/Scripts/4_World"};
+			};
+			class missionScriptModule
+			{
+				value = "";
+				files[] = {"DZNC_Zombies/Scripts/5_Mission"};
 			};
 		};
 
