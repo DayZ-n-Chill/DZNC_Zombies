@@ -284,7 +284,8 @@ TextWidgetClass ListHeaderEyes {
  "text halign" left
  "text valign" center
 }
-TextListboxWidgetClass ZombieList {
+TextListboxWidgetClass ZombieList4 {
+ visible 0
  clipchildren 1
  position 16 169
  size 528 104
@@ -298,10 +299,63 @@ TextListboxWidgetClass ZombieList {
  lines 4
  font "gui/fonts/Metron22"
 }
+TextListboxWidgetClass ZombieList6 {
+ visible 0
+ clipchildren 1
+ position 16 169
+ size 528 156
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style Default
+ "title visible" 0
+ colums "Zombie;68;Eyes;32;"
+ lines 6
+ font "gui/fonts/Metron22"
+}
+TextListboxWidgetClass ZombieList8 {
+ visible 0
+ clipchildren 1
+ position 16 169
+ size 528 208
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style Default
+ "title visible" 0
+ colums "Zombie;68;Eyes;32;"
+ lines 8
+ font "gui/fonts/Metron22"
+}
+TextListboxWidgetClass ZombieList10 {
+ visible 0
+ clipchildren 1
+ position 16 169
+ size 528 260
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style Default
+ "title visible" 0
+ colums "Zombie;68;Eyes;32;"
+ lines 10
+ font "gui/fonts/Metron22"
+}
+FrameWidgetClass Lower {
+ position 0 273
+ size 560 445
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ {
 TextWidgetClass SelectedTitle {
  ignorepointer 1
  color 0.75 0.75 0.77 1
- position 16 289
+ position 16 16
  size 180 18
  hexactpos 1
  vexactpos 1
@@ -317,7 +371,7 @@ TextWidgetClass SelectedTitle {
 PanelWidgetClass SelectedRule {
  ignorepointer 1
  color 0.3 0.3 0.32 1
- position 196 298
+ position 196 25
  size 348 1
  hexactpos 1
  vexactpos 1
@@ -327,7 +381,7 @@ PanelWidgetClass SelectedRule {
 }
 ButtonWidgetClass ListModeVanilla {
  color 0 0 0 0
- position 16 315
+ position 16 42
  size 128 32
  hexactpos 1
  vexactpos 1
@@ -375,7 +429,7 @@ ButtonWidgetClass ListModeVanilla {
 }
 ButtonWidgetClass ListModeGlow {
  color 0 0 0 0
- position 144 315
+ position 144 42
  size 128 32
  hexactpos 1
  vexactpos 1
@@ -423,7 +477,7 @@ ButtonWidgetClass ListModeGlow {
 }
 ButtonWidgetClass ListColorPicker {
  color 0 0 0 0
- position 284 315
+ position 284 42
  size 260 32
  hexactpos 1
  vexactpos 1
@@ -496,7 +550,7 @@ ButtonWidgetClass ListColorPicker {
 }
 ButtonWidgetClass ListApplyFamily {
  color 0 0 0 0
- position 16 355
+ position 16 82
  size 528 32
  hexactpos 1
  vexactpos 1
@@ -545,7 +599,7 @@ ButtonWidgetClass ListApplyFamily {
 TextWidgetClass BulkTitle {
  ignorepointer 1
  color 0.75 0.75 0.77 1
- position 16 403
+ position 16 130
  size 124 18
  hexactpos 1
  vexactpos 1
@@ -561,7 +615,7 @@ TextWidgetClass BulkTitle {
 PanelWidgetClass BulkRule {
  ignorepointer 1
  color 0.3 0.3 0.32 1
- position 140 412
+ position 140 139
  size 404 1
  hexactpos 1
  vexactpos 1
@@ -571,7 +625,7 @@ PanelWidgetClass BulkRule {
 }
 ButtonWidgetClass BulkColorPicker {
  color 0 0 0 0
- position 16 429
+ position 16 156
  size 260 32
  hexactpos 1
  vexactpos 1
@@ -644,7 +698,7 @@ ButtonWidgetClass BulkColorPicker {
 }
 ButtonWidgetClass SetAll {
  color 0 0 0 0
- position 284 429
+ position 284 156
  size 260 32
  hexactpos 1
  vexactpos 1
@@ -681,7 +735,7 @@ ButtonWidgetClass SetAll {
 }
 ButtonWidgetClass RandomizeAll {
  color 0 0 0 0
- position 16 469
+ position 16 196
  size 260 32
  hexactpos 1
  vexactpos 1
@@ -729,7 +783,7 @@ ButtonWidgetClass RandomizeAll {
 }
 ButtonWidgetClass ResetAll {
  color 0 0 0 0
- position 284 469
+ position 284 196
  size 260 32
  hexactpos 1
  vexactpos 1
@@ -791,7 +845,7 @@ ButtonWidgetClass ResetAll {
 }
 ButtonWidgetClass CrazyMode {
  color 0 0 0 0
- position 16 517
+ position 16 244
  size 528 38
  hexactpos 1
  vexactpos 1
@@ -886,7 +940,7 @@ ButtonWidgetClass CrazyMode {
 }
 ButtonWidgetClass FadeOnDeath {
  color 0 0 0 0
- position 16 567
+ position 16 294
  size 528 38
  hexactpos 1
  vexactpos 1
@@ -981,7 +1035,7 @@ ButtonWidgetClass FadeOnDeath {
 }
 TextWidgetClass BrightnessTitle {
  ignorepointer 1
- position 16 621
+ position 16 348
  size 300 18
  hexactpos 1
  vexactpos 1
@@ -996,7 +1050,7 @@ TextWidgetClass BrightnessTitle {
 }
 TextWidgetClass BrightnessValue {
  ignorepointer 1
- position 344 621
+ position 344 348
  size 200 18
  hexactpos 1
  vexactpos 1
@@ -1010,7 +1064,7 @@ TextWidgetClass BrightnessValue {
  "text valign" center
 }
 FrameWidgetClass BrightnessSlider {
- position 16 647
+ position 16 374
  size 528 20
  hexactpos 1
  vexactpos 1
@@ -1058,7 +1112,7 @@ FrameWidgetClass BrightnessSlider {
 PanelWidgetClass FooterRule {
  ignorepointer 1
  color 0.3 0.3 0.32 1
- position 16 679
+ position 16 406
  size 528 1
  hexactpos 1
  vexactpos 1
@@ -1068,7 +1122,7 @@ PanelWidgetClass FooterRule {
 }
 TextWidgetClass Summary {
  ignorepointer 1
- position 16 688
+ position 16 415
  size 528 22
  hexactpos 1
  vexactpos 1
@@ -1081,10 +1135,12 @@ TextWidgetClass Summary {
  "text halign" center
  "text valign" center
 }
+ }
+}
 FrameWidgetClass ColorPopup {
  visible 0
  position 0 0
- size 260 152
+ size 260 212
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -1326,6 +1382,102 @@ FrameWidgetClass ColorPopup {
      style rover_sim_colorable
     }
     TextWidgetClass Pick5_label {
+     ignorepointer 1
+     position 44 0
+     size 200 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/sdf_MetronBook24"
+     "exact text" 1
+     "exact text size" 17
+     "text halign" left
+     "text valign" center
+    }
+   }
+  }
+  ButtonWidgetClass Pick6 {
+   color 0 0 0 0
+   position 1 151
+   size 258 30
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    PanelWidgetClass Pick6_bg {
+     ignorepointer 1
+     color 0.1 0.1 0.11 1
+     position 0 0
+     size 1 1
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style rover_sim_colorable
+    }
+    PanelWidgetClass Pick6_swatch {
+     ignorepointer 1
+     color 1 1 1 1
+     position 12 6
+     size 18 18
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style rover_sim_colorable
+    }
+    TextWidgetClass Pick6_label {
+     ignorepointer 1
+     position 44 0
+     size 200 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     text ""
+     font "gui/fonts/sdf_MetronBook24"
+     "exact text" 1
+     "exact text size" 17
+     "text halign" left
+     "text valign" center
+    }
+   }
+  }
+  ButtonWidgetClass Pick7 {
+   color 0 0 0 0
+   position 1 181
+   size 258 30
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   {
+    PanelWidgetClass Pick7_bg {
+     ignorepointer 1
+     color 0.1 0.1 0.11 1
+     position 0 0
+     size 1 1
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style rover_sim_colorable
+    }
+    PanelWidgetClass Pick7_swatch {
+     ignorepointer 1
+     color 1 1 1 1
+     position 12 6
+     size 18 18
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 1
+     style rover_sim_colorable
+    }
+    TextWidgetClass Pick7_label {
      ignorepointer 1
      position 44 0
      size 200 30

@@ -38,6 +38,12 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	static const float SWITCH_KNOB_Y = 9;
 	static const int POPUP_SELECTED = 0;
 	static const int POPUP_BULK = 1;
+	static const float POPUP_ROW_HEIGHT = 30;
+	// The layout carries the zombie list in these row counts (the row count can't change at runtime).
+	// The tallest one whose panel fits this share of the screen height is shown; the smallest is the fallback.
+	static ref array<int> LIST_ROWS = {10, 8, 6, 4};
+	static const float LIST_ROW_HEIGHT = 26;
+	static const float PANEL_MAX_SCREEN = 0.88;
 
 	protected ref array<int> m_Colors;
 	protected ref array<int> m_ListTypes = new array<int>;	// list row -> zombie index
@@ -62,7 +68,6 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	protected float m_RotateSendTimer;
 	protected bool m_PreviewPending;
 	protected int m_PopupTarget;
-	protected Camera m_FrozenCamera;
 
 	protected ButtonWidget m_FilterAll;
 	protected ButtonWidget m_FilterGlowing;
@@ -112,7 +117,6 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		m_FilterGlowing = ButtonWidget.Cast(layoutRoot.FindAnyWidget("FilterGlowing"));
 		m_SearchBox = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("SearchBox"));
 		m_SearchHint = layoutRoot.FindAnyWidget("SearchHint");
-		m_ZombieList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("ZombieList"));
 		m_ListModeVanilla = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ListModeVanilla"));
 		m_ListModeGlow = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ListModeGlow"));
 		m_ListColorPicker = layoutRoot.FindAnyWidget("ListColorPicker");
@@ -135,27 +139,62 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		m_ColorPopup = layoutRoot.FindAnyWidget("ColorPopup");
 		m_Summary = TextWidget.Cast(layoutRoot.FindAnyWidget("Summary"));
 
-		// The color popup lists every glow color, in the same order as the color table.
-		for (int color = 1; color < DZNC_Eyes.COLOR_NAMES.Count(); color++)
+		// The color popup lists every glow color, in the same order as the color table. The layout has a
+		// fixed number of slots; unused ones are hidden and the popup is cut to the rows in use.
+		int glowCount = DZNC_Eyes.COLOR_NAMES.Count() - 1;
+		int slot = 1;
+		Widget pick = layoutRoot.FindAnyWidget("Pick" + slot);
+		while (pick)
 		{
-			Widget pick = layoutRoot.FindAnyWidget("Pick" + color);
-			if (!pick)
-				continue;
-			TextWidget.Cast(pick.FindAnyWidget(pick.GetName() + "_label")).SetText(DZNC_Eyes.COLOR_NAMES[color]);
-			pick.FindAnyWidget(pick.GetName() + "_swatch").SetColor(DZNC_Eyes.COLOR_ARGB[color]);
+			pick.Show(slot <= glowCount);
+			if (slot <= glowCount)
+			{
+				TextWidget.Cast(pick.FindAnyWidget(pick.GetName() + "_label")).SetText(DZNC_Eyes.COLOR_NAMES[slot]);
+				pick.FindAnyWidget(pick.GetName() + "_swatch").SetColor(DZNC_Eyes.COLOR_ARGB[slot]);
+			}
+			slot++;
+			pick = layoutRoot.FindAnyWidget("Pick" + slot);
 		}
+		float popupW, popupH;
+		m_ColorPopup.GetSize(popupW, popupH);
+		m_ColorPopup.SetSize(popupW, 2 + POPUP_ROW_HEIGHT * Math.Min(glowCount, slot - 1));
 
 		int screenW, screenH;
 		GetScreenSize(screenW, screenH);
 		float panelW, panelH;
+		FitListToScreen(screenH);
 		layoutRoot.GetSize(panelW, panelH);
 		layoutRoot.SetPos(screenW * PANEL_LEFT, Math.Max(0, (screenH - panelH) * 0.5));
 		return layoutRoot;
 	}
 
-	void ~DZNC_EyeMenu()
+	// Shows the tallest list that keeps the panel within its share of the screen, and moves everything
+	// under the list down by the extra height. The layout is built around the smallest list.
+	protected void FitListToScreen(int screenH)
 	{
-		ReleaseCamera();
+		int smallest = LIST_ROWS[LIST_ROWS.Count() - 1];
+		float baseW, baseH;
+		layoutRoot.GetSize(baseW, baseH);
+
+		int rows = smallest;
+		foreach (int candidate : LIST_ROWS)
+		{
+			if (baseH + (candidate - smallest) * LIST_ROW_HEIGHT <= screenH * PANEL_MAX_SCREEN)
+			{
+				rows = candidate;
+				break;
+			}
+		}
+
+		m_ZombieList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("ZombieList" + rows));
+		m_ZombieList.Show(true);
+
+		float extra = (rows - smallest) * LIST_ROW_HEIGHT;
+		Widget lower = layoutRoot.FindAnyWidget("Lower");
+		float lowerX, lowerY;
+		lower.GetPos(lowerX, lowerY);
+		lower.SetPos(lowerX, lowerY + extra);
+		layoutRoot.SetSize(baseW, baseH + extra);
 	}
 
 	override void OnShow()
@@ -163,7 +202,6 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		super.OnShow();
 		GetGame().GetMission().AddActiveInputExcludes({"menu"});
 		GetGame().GetUIManager().ShowUICursor(true);
-		FreezeCamera();
 	}
 
 	override void OnHide()
@@ -171,42 +209,10 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		super.OnHide();
 		GetGame().GetMission().RemoveActiveInputExcludes({"menu"}, true);
 		GetGame().GetUIManager().ShowUICursor(false);
-		ReleaseCamera();
 
 		// The server removes the preview zombie it spawned for us.
 		ScriptRPC rpc = new ScriptRPC();
 		rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.CLOSE_PREVIEW, true);
-	}
-
-	// Swaps the player's camera for a client-only static one at the exact same spot, direction and field of
-	// view, so head bob and fidgets can't move the view while the preview zombie is framed. Same calls as
-	// the vanilla intro scene camera; turning it off hands the view back to the player's own camera.
-	protected void FreezeCamera()
-	{
-		if (m_FrozenCamera)
-			return;
-
-		vector camPos = GetGame().GetCurrentCameraPosition();
-		vector camDir = GetGame().GetCurrentCameraDirection();
-		float fov = Camera.GetCurrentFOV();
-		m_FrozenCamera = Camera.Cast(GetGame().CreateObject("staticcamera", camPos, true));
-		if (!m_FrozenCamera)
-			return;
-
-		m_FrozenCamera.SetPosition(camPos);
-		m_FrozenCamera.LookAt(camPos + camDir * 10);
-		m_FrozenCamera.SetFOV(fov);
-		m_FrozenCamera.SetActive(true);
-	}
-
-	protected void ReleaseCamera()
-	{
-		if (!m_FrozenCamera)
-			return;
-
-		m_FrozenCamera.SetActive(false);
-		GetGame().ObjectDelete(m_FrozenCamera);
-		m_FrozenCamera = null;
 	}
 
 	void SetColors(array<int> colors, int intensity, int crazy, int fade)
@@ -343,11 +349,12 @@ class DZNC_EyeMenu extends UIScriptedMenu
 			return;
 		}
 
+		// The selectors sit inside the lower frame, so the popup is placed in screen space.
 		m_PopupTarget = target;
 		float x, y, w, h;
-		opener.GetPos(x, y);
-		opener.GetSize(w, h);
-		m_ColorPopup.SetPos(x, y + h + 2);
+		opener.GetScreenPos(x, y);
+		opener.GetScreenSize(w, h);
+		m_ColorPopup.SetScreenPos(x, y + h + 2);
 		m_ColorPopup.Show(true);
 	}
 
@@ -761,14 +768,6 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	override void Update(float timeslice)
 	{
 		super.Update(timeslice);
-
-		// Never leave a dead or missing player looking through the frozen camera.
-		Man player = GetGame().GetPlayer();
-		if (!player || !player.IsAlive())
-		{
-			Close();
-			return;
-		}
 
 		if (m_ResetConfirmTimer > 0)
 		{

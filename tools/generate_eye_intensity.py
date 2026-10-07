@@ -8,10 +8,10 @@ Step 5 is the normal brightness; RGB is scaled per step, alpha stays 1.
 import pathlib, re, sys
 from decimal import Decimal, ROUND_HALF_UP
 
-BASE = {"yellow": (2.5, 2.0, 0), "red": (3.0, 0.1, 0), "blue": (0.2, 0.7, 3.0), "green": (0.3, 2.5, 0.1), "orange": (3.0, 1.2, 0)}
+BASE = {"yellow": (2.5, 2.0, 0), "red": (3.0, 0.1, 0), "blue": (0.2, 0.7, 3.0), "green": (0.3, 2.5, 0.1), "orange": (3.0, 1.2, 0), "indigo": (0.9, 0.05, 3.0), "violet": (2.2, 0.1, 3.0)}
 MULTIPLIERS = [0.4, 0.55, 0.7, 0.85, 1.0, 1.25, 1.6, 2.0, 2.75, 3.5]
 EMISSIVE = re.compile(r"emmisive\[\]\s*=\s*\{[^}]*\};")
-STEP_FILE = re.compile(r"^(.+)_(yellow|red|blue|green|orange)_(\d+)\.rvmat$")
+STEP_FILE = re.compile(r"^(.+)_(yellow|red|blue|green|orange|indigo|violet)_(\d+)\.rvmat$")
 
 
 def fmt(value):
@@ -36,12 +36,17 @@ for path in bodies.glob("*.rvmat"):
 if not groups:
     sys.exit("no step rvmats found")
 
+# Every color of a body differs only in the emmisive line, so one template per body
+# is enough to write every color at every step.
+templates = {}
 for (body, color), paths in groups.items():
-    template = paths[0].read_text()
-    if len(EMISSIVE.findall(template)) != 1:
-        sys.exit(f"{paths[0].name}: expected exactly one emmisive line")
+    templates.setdefault(body, paths[0].read_text())
     for path in paths:
         path.unlink()
-    for step, mult in enumerate(MULTIPLIERS, start=1):
-        (bodies / f"{body}_{color}_{step}.rvmat").write_text(EMISSIVE.sub(emissive(color, mult), template))
-print(f"{len(groups)} materials -> {len(groups) * len(MULTIPLIERS)} files")
+for body, template in templates.items():
+    if len(EMISSIVE.findall(template)) != 1:
+        sys.exit(f"{body}: expected exactly one emmisive line")
+    for color in BASE:
+        for step, mult in enumerate(MULTIPLIERS, start=1):
+            (bodies / f"{body}_{color}_{step}.rvmat").write_text(EMISSIVE.sub(emissive(color, mult), template))
+print(f"{len(templates)} bodies x {len(BASE)} colors x {len(MULTIPLIERS)} steps = {len(templates) * len(BASE) * len(MULTIPLIERS)} files")
