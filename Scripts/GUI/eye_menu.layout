@@ -860,7 +860,7 @@ ButtonWidgetClass CrazyMode {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "Cycle eye colors"
+   text "Crazy eyes"
    font "gui/fonts/sdf_MetronBook24"
    "exact text" 1
    "exact text size" 18
