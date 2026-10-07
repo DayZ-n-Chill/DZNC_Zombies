@@ -10,7 +10,8 @@ enum DZNC_EyeRPC
 	CLOSE_PREVIEW,				// client -> server: remove it
 	SET_MANY,					// client -> server: change a batch of zombie types at once
 	ROTATE_PREVIEW,				// client -> server: spin the preview zombie
-	SET_INTENSITY				// client -> server: change the global eye brightness step
+	SET_INTENSITY,				// client -> server: change the global eye brightness step
+	SET_CRAZY					// client -> server: turn crazy mode on (1) or off (0)
 }
 
 class DZNC_Eyes
@@ -19,6 +20,9 @@ class DZNC_Eyes
 	static const int INTENSITY_MIN = 1;
 	static const int INTENSITY_MAX = 10;
 	static const int INTENSITY_DEFAULT = 5;
+
+	// Crazy mode cycles every zombie through these colors once per second: Red, Orange, Yellow, Green, Blue.
+	static ref array<int> CRAZY_COLORS = {2, 5, 1, 4, 3};
 
 	// Index 0 leaves the zombie looking vanilla.
 	static ref TStringArray COLOR_NAMES = {"Vanilla", "Yellow", "Red", "Blue", "Green", "Orange"};
@@ -274,6 +278,7 @@ class DZNC_EyeSettingsData
 {
 	ref map<string, int> ZombieEyes = new map<string, int>;
 	int Intensity = DZNC_Eyes.INTENSITY_DEFAULT;
+	bool CrazyMode = false;
 }
 
 class DZNC_AdminData
@@ -354,5 +359,15 @@ class DZNC_EyeSettings
 	void SetIntensity(int intensity)
 	{
 		m_Data.Intensity = DZNC_Eyes.ClampIntensity(intensity);
+	}
+
+	bool GetCrazyMode()
+	{
+		return m_Data.CrazyMode;
+	}
+
+	void SetCrazyMode(bool crazy)
+	{
+		m_Data.CrazyMode = crazy;
 	}
 }

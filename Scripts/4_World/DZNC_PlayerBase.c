@@ -24,6 +24,9 @@ modded class PlayerBase
 			case DZNC_EyeRPC.SET_INTENSITY:
 				DZNC_OnSetIntensity(sender, ctx);
 				break;
+			case DZNC_EyeRPC.SET_CRAZY:
+				DZNC_OnSetCrazy(sender, ctx);
+				break;
 			case DZNC_EyeRPC.SHOW_PREVIEW:
 				DZNC_OnShowPreview(sender, ctx);
 				break;
@@ -61,6 +64,10 @@ modded class PlayerBase
 			colors.Insert(settings.GetColor(type));
 		rpc.Write(colors);
 		rpc.Write(settings.GetIntensity());
+		int crazy;
+		if (settings.GetCrazyMode())
+			crazy = 1;
+		rpc.Write(crazy);
 		rpc.Send(this, DZNC_EyeRPC.MENU_DATA, true, sender);
 		Print("[DZNC_Zombies] Opened eye menu for admin " + sender.GetPlainId());
 	}
@@ -122,6 +129,26 @@ modded class PlayerBase
 		Print("[DZNC_Zombies] " + sender.GetPlainId() + " set eye brightness to " + settings.GetIntensity());
 	}
 
+	protected void DZNC_OnSetCrazy(PlayerIdentity sender, ParamsReadContext ctx)
+	{
+		if (!GetGame().IsServer() || !DZNC_EyeSettings.Get().IsAdmin(sender))
+			return;
+
+		int crazy;
+		if (!ctx.Read(crazy))
+			return;
+
+		DZNC_EyeSettings settings = DZNC_EyeSettings.Get();
+		settings.SetCrazyMode(crazy != 0);
+		settings.Save();
+		ZombieBase.DZNC_ApplyCrazy(settings.GetCrazyMode());
+
+		string state = "off";
+		if (settings.GetCrazyMode())
+			state = "on";
+		Print("[DZNC_Zombies] " + sender.GetPlainId() + " turned crazy mode " + state);
+	}
+
 	// Spawns a frozen zombie where the admin's menu shows it inside the preview frame, so the eyes can be
 	// judged in the real world. The client works out the spot and the yaw that faces its camera.
 	protected void DZNC_OnShowPreview(PlayerIdentity sender, ParamsReadContext ctx)
@@ -181,13 +208,14 @@ modded class PlayerBase
 	{
 		array<int> colors = new array<int>;
 		int intensity;
-		if (!ctx.Read(colors) || !ctx.Read(intensity))
+		int crazy;
+		if (!ctx.Read(colors) || !ctx.Read(intensity) || !ctx.Read(crazy))
 		{
 			Print("[DZNC_Zombies] Could not read eye menu data");
 			return;
 		}
 
 		Print("[DZNC_Zombies] Eye menu data received for " + colors.Count() + " zombie types");
-		DZNC_EyeMenu.Open(colors, intensity);
+		DZNC_EyeMenu.Open(colors, intensity, crazy);
 	}
 }

@@ -62,17 +62,19 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	protected Widget m_BulkColorSwatch;
 	protected ButtonWidget m_SetAll;
 	protected ButtonWidget m_ResetAll;
+	protected CheckBoxWidget m_CrazyMode;
+	protected Widget m_CrazyHint;
 	protected SliderWidget m_BrightnessSlider;
 	protected TextWidget m_BrightnessValue;
 	protected TextWidget m_Summary;
 
-	static void Open(array<int> colors, int intensity)
+	static void Open(array<int> colors, int intensity, int crazy)
 	{
 		DZNC_EyeMenu menu = DZNC_EyeMenu.Cast(GetGame().GetUIManager().FindMenu(MENU_ID));
 		if (!menu)
 			menu = DZNC_EyeMenu.Cast(GetGame().GetUIManager().EnterScriptedMenu(MENU_ID, null));
 		if (menu)
-			menu.SetColors(colors, intensity);
+			menu.SetColors(colors, intensity, crazy);
 	}
 
 	static bool IsOpen()
@@ -100,6 +102,8 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		m_SetAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("SetAll"));
 		m_ResetAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ResetAll"));
 		m_Summary = TextWidget.Cast(layoutRoot.FindAnyWidget("Summary"));
+		m_CrazyMode = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("CrazyMode"));
+		m_CrazyHint = layoutRoot.FindAnyWidget("CrazyHint");
 		m_BrightnessSlider = SliderWidget.Cast(layoutRoot.FindAnyWidget("BrightnessSlider"));
 		m_BrightnessValue = TextWidget.Cast(layoutRoot.FindAnyWidget("BrightnessValue"));
 		m_BrightnessSlider.SetMinMax(INTENSITY_MIN, INTENSITY_MAX);
@@ -131,11 +135,12 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.CLOSE_PREVIEW, true);
 	}
 
-	void SetColors(array<int> colors, int intensity)
+	void SetColors(array<int> colors, int intensity, int crazy)
 	{
 		m_Colors = colors;
 		m_Intensity = Math.Clamp(intensity, INTENSITY_MIN, INTENSITY_MAX);
 		m_BrightnessSlider.SetCurrent(m_Intensity);
+		m_CrazyMode.SetChecked(crazy != 0);
 		ShowPreview();
 		RefreshList();
 		RefreshAll();
@@ -183,6 +188,16 @@ class DZNC_EyeMenu extends UIScriptedMenu
 				return true;
 			case "RandomizeAll":
 				RandomizeAll();
+				return true;
+			case "CrazyMode":
+				// The checkbox has already flipped by the time the click arrives, like vanilla's script console.
+				int crazy = 0;
+				if (m_CrazyMode.IsChecked())
+					crazy = 1;
+				ScriptRPC crazyRpc = new ScriptRPC();
+				crazyRpc.Write(crazy);
+				crazyRpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.SET_CRAZY, true);
+				RefreshAll();
 				return true;
 			case "ResetAll":
 				// Wiping every setting takes a second click so it can't happen by accident.
@@ -431,6 +446,7 @@ class DZNC_EyeMenu extends UIScriptedMenu
 			Label(m_ResetAll, "CLICK AGAIN TO CONFIRM");
 		else
 			Label(m_ResetAll, "RESET ALL TO VANILLA");
+		m_CrazyHint.Show(m_CrazyMode.IsChecked());
 		m_BrightnessValue.SetText(m_Intensity.ToString() + " / " + INTENSITY_MAX);
 
 		int glowing;

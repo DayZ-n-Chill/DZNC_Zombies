@@ -1,7 +1,7 @@
 PanelWidgetClass DZNC_EyeMenuRoot {
  color 0.09 0.09 0.09 0.94
  position 40 40
- size 560 674
+ size 560 694
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -607,7 +607,7 @@ ButtonWidgetClass ResetAll {
 ButtonWidgetClass RandomizeAll {
  color 0 0 0 0
  position 16 516
- size 528 44
+ size 318 44
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -641,9 +641,37 @@ ButtonWidgetClass RandomizeAll {
   }
  }
 }
+CheckBoxWidgetClass CrazyMode {
+ position 350 516
+ size 194 44
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "CRAZY MODE"
+ font "gui/fonts/sdf_MetronBook24"
+ checked 0
+}
+TextWidgetClass CrazyHint {
+ visible 0
+ ignorepointer 1
+ color 0.7 0.7 0.7 1
+ position 16 562
+ size 528 20
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Eyes cycle colors every second"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 15
+ "text halign" right
+ "text valign" center
+}
 TextWidgetClass BrightnessTitle {
  ignorepointer 1
- position 16 568
+ position 16 588
  size 170 36
  hexactpos 1
  vexactpos 1
@@ -658,7 +686,7 @@ TextWidgetClass BrightnessTitle {
 }
 SliderWidgetClass BrightnessSlider {
  color 1 1 1 0.549
- position 190 574
+ position 190 594
  size 230 24
  hexactpos 1
  vexactpos 1
@@ -673,7 +701,7 @@ SliderWidgetClass BrightnessSlider {
 }
 TextWidgetClass BrightnessValue {
  ignorepointer 1
- position 430 568
+ position 430 588
  size 114 36
  hexactpos 1
  vexactpos 1
@@ -688,7 +716,7 @@ TextWidgetClass BrightnessValue {
 }
 TextWidgetClass Summary {
  ignorepointer 1
- position 16 612
+ position 16 632
  size 528 26
  hexactpos 1
  vexactpos 1
@@ -704,7 +732,7 @@ TextWidgetClass Summary {
 TextWidgetClass SpinHint {
  ignorepointer 1
  color 0.7 0.7 0.7 1
- position 16 642
+ position 16 662
  size 528 24
  hexactpos 1
  vexactpos 1
