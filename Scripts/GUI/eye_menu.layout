@@ -665,9 +665,9 @@ SliderWidgetClass BrightnessSlider {
  hexactsize 1
  vexactsize 1
  style Default
- maximum 5
+ maximum 10
  step 1
- current 3
+ current 5
  "fill in" 1
  "listen to input" 1
 }
@@ -679,7 +679,7 @@ TextWidgetClass BrightnessValue {
  vexactpos 1
  hexactsize 1
  vexactsize 1
- text "Normal (3/5)"
+ text "5 / 10"
  font "gui/fonts/sdf_MetronBook24"
  "exact text" 1
  "exact text size" 17

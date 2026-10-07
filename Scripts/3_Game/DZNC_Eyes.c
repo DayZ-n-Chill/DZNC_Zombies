@@ -15,10 +15,10 @@ enum DZNC_EyeRPC
 
 class DZNC_Eyes
 {
-	// Brightness steps. Each glow material exists once per step, 3 is the original brightness.
+	// Brightness steps. Each glow material exists once per step, 5 is the original brightness.
 	static const int INTENSITY_MIN = 1;
-	static const int INTENSITY_MAX = 5;
-	static const int INTENSITY_DEFAULT = 3;
+	static const int INTENSITY_MAX = 10;
+	static const int INTENSITY_DEFAULT = 5;
 
 	// Index 0 leaves the zombie looking vanilla.
 	static ref TStringArray COLOR_NAMES = {"Vanilla", "Yellow", "Red", "Blue", "Green", "Orange"};

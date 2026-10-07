@@ -1,7 +1,7 @@
 ambient[]={2,2,2,1};
 diffuse[]={1,1,1,1};
 forcedDiffuse[]={0,0,0,0};
-emmisive[]={0.39,3.25,0.13,1};
+emmisive[]={0.26,2.13,0.09,1};
 specular[]={1,1,1,1};
 specularPower=100;
 PixelShaderID="Super";

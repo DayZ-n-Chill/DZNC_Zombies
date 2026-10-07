@@ -19,15 +19,14 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	static const float PREVIEW_BOTTOM = 0.92;
 	static const float PREVIEW_MAX_ANGLE = 1.4;
 	static const int INTENSITY_MIN = 1;
-	static const int INTENSITY_MAX = 5;
-	static ref TStringArray INTENSITY_NAMES = {"", "Dim", "Low", "Normal", "Bright", "Max"};
+	static const int INTENSITY_MAX = 10;
 
 	protected ref array<int> m_Colors;
 	protected ref array<int> m_ListTypes = new array<int>;	// list row -> zombie index
 	protected int m_Index;
 	protected int m_LastGlowColor = 1;
 	protected int m_BulkColor = 1;
-	protected int m_Intensity = 3;
+	protected int m_Intensity = 5;
 	protected bool m_ChangedOnly;
 	protected float m_ResetConfirmTimer;
 	protected bool m_FillingList;
@@ -415,7 +414,7 @@ class DZNC_EyeMenu extends UIScriptedMenu
 			Label(m_ResetAll, "CLICK AGAIN TO CONFIRM");
 		else
 			Label(m_ResetAll, "RESET ALL TO VANILLA");
-		m_BrightnessValue.SetText(INTENSITY_NAMES[m_Intensity] + " (" + m_Intensity + "/" + INTENSITY_MAX + ")");
+		m_BrightnessValue.SetText(m_Intensity.ToString() + " / " + INTENSITY_MAX);
 
 		int glowing;
 		foreach (int c : m_Colors)
