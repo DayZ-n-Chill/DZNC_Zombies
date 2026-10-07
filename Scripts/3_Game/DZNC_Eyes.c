@@ -279,6 +279,8 @@ class DZNC_EyeSettingsData
 class DZNC_AdminData
 {
 	ref TStringArray SteamIDs = new TStringArray;
+	// Spawns every menu zombie type in front of the first admin to join after a server start.
+	bool DebugLineup = false;
 }
 
 // Server only. Lives in $profile:DZNC_Zombies so it works the same on every map.

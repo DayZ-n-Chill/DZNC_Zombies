@@ -1,39 +1,71 @@
-![alt text](https://steamuserimages-a.akamaihd.net/ugc/1787342881622782546/AF49949CEFA5E6D3EE4A78D04369A38885E74D36/?imw=5000&imh=5000&ima=fit&impolicy=Letterbox&imcolor=#000000&letterbox=false "DayZ Glowing Zombie Eyes")
+# The Original Glowing Zombie Eyes 2.0
 
-# DayZ n Chill's Glowing Zombie Eyes
+Inspired by the glowing eyes of Call of Duty Zombies. Give DayZ's infected glowing eyes in five colors, and control every one of them from an in-game admin menu. No XML editing, no map setup, and it works on any map.
 
-## About The Mod
+## What's new in 2.0
 
-I created this mod because I always loved the way the eyes glow in the Call of Duty series Zombies. So to simulate that effect I have created the DayZ Emissive Zombies. Note this mod is a work in progress.
+- **In-game admin menu**: choose vanilla or glowing eyes for every zombie type, live, while you play.
+- **Five glow colors**: yellow, red, blue, green and orange.
+- **Brightness slider (1 to 10)**: from a subtle glint to blinding.
+- **Per-body glow materials**: each zombie keeps its own vanilla skin, cloth and shading detail; only the eyes glow.
+- **Works on any map**: eyes are applied as zombies spawn, so Chernarus, Livonia, Sakhal and custom maps all work with their normal spawns.
+- **Saved permanently**: settings survive server restarts.
+- **Eyes stay visible**: glowing zombies never spawn with hats, helmets, masks or glasses covering their faces.
 
-## Instructions
+## Installation
 
-NOTE: The rvmats are located in the PBO on the workshop NOT IN THIS REPO. You will have to unpack and repack to change brightness or add your own colors.
+1. Add the mod to **both your server and your clients**. It is required on both, because the menu and the glow materials live client-side.
+2. Add the server key from the mod's Keys folder to your server's keys folder.
+3. Start the server once. It creates `DZNC_Zombies/Admins.json` inside your server's profile folder.
 
-You can easily change the colors of the eyes by editing one line of code in the eyes.rvmat. Just open the file in any text editor and go to line 4:
+## Making yourself an admin
 
-Look for the code that looks like the line below.
+Open `<server profile folder>/DZNC_Zombies/Admins.json` and add your Steam64 ID (the 17-digit number from your Steam profile URL or a site like steamid.io):
 
-VALUES = R,B,G,A (Red, Blue, Green, Alpha)
+```json
+{
+    "SteamIDs": [
+        "76561198000000000"
+    ],
+    "DebugLineup": false
+}
+```
 
-1 = 10%
+Add more admins by separating IDs with commas. Restart the server after editing; the file is read at startup.
 
-You can go over 100% to gain brightness, but it may make your zombies' bodies glow slightly. I will be tweaking the rvmats to fix this over time.
+`DebugLineup` is for testing: set it to `true` and the first admin to join after a restart gets one of every zombie type spawned in front of them, frozen, so you can compare colors side by side. Leave it `false` on a live server.
 
-## XML
+## Using the menu
 
-XML files included in mod.
+Press **End** in game to open the Zombie Eyes menu (rebind "Zombie Eye Admin Menu" in your Controls settings). Players who are not on the admin list just get a "not on the admin list" message.
 
-## Can I Repack?
+- **Zombie list**: all 145 vanilla zombie types with their current eye color. Search by name, or filter to glowing only.
+- **Per zombie**: pick Vanilla or Glowing and choose the color. **Apply to all outfits** copies the setting to every outfit of that body.
+- **All zombies at once**: set every zombie to one color, **Randomize all colors**, or **Reset all to vanilla** (click twice to confirm).
+- **Eye brightness**: one slider for every glowing zombie, 1 (dim) to 10 (super bright), 5 is normal.
+- **Live preview**: the selected zombie appears in front of you, frozen. Click and drag outside the menu to spin it. Drag the red header to move the menu.
 
-This was a very simple mod. You can repack it, reuse it, do what ever you want with it. I hope you all enjoy it. A little credit would be nice. :)
+Every change applies instantly to zombies already in the world and is saved to `DZNC_Zombies/EyeSettings.json` in the server profile folder.
+
+## Good to know
+
+- A fresh install starts with every zombie on vanilla eyes. Open the menu and set your colors (or hit Randomize all colors) to get the glow going.
+- The glow shows best at night. Brightness 8 and above adds a soft halo around the eyes; 9 and 10 are deliberately extreme.
+- Zombies added by other mods are left untouched.
+- The pre-colored DZNC zombie classes from 1.0 still work and now follow the menu settings of their vanilla type.
+
+## Looking for the original?
+
+Version 1.0 is still available if you prefer the classic setup with its pre-colored zombie classes: [Glowing Zombie Eyes 1.0](https://steamcommunity.com/sharedfiles/filedetails/?id=2466713208)
+
+## Can I repack it?
+
+No, and you shouldn't need to. Everything is configured in game and saved on your server, so there is nothing to unpack or edit.
+
+## Source code
+
+The source is available through our Discord. Come say hi and you can get access there.
 
 ## Support
 
-If you need help with this you can find me on Discord at discord.gg/dayznchill.
-
-## Special Thanks
-
-Thanks a ton to Shaggoth for creating the Types and Events Files. Also thanks to DOOM for testing the Namalsk Additions.
-
-
+Need help? Find us on Discord: [discord.gg/dayznchill](https://discord.gg/dayznchill)
