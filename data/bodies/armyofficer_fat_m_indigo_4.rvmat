@@ -96,6 +96,6 @@ class Stage7
 };
 class Stage8
 {
-	texture="DZNC_Zombies\data\eyes_e_co.paa";
+	texture="DZNC_Zombies\data\OfficerEyes.paa";
 	texGen="0";
 };
