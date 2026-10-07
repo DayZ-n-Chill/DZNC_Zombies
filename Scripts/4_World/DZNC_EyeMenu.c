@@ -511,6 +511,8 @@ class DZNC_EyeMenu extends UIScriptedMenu
 			Label(m_ResetAll, "Click again to confirm");
 		else
 			Label(m_ResetAll, "Reset to vanilla");
+		// The refresh icon would overlap the longer confirm text.
+		m_ResetAll.FindAnyWidget("ResetAll_icon").Show(m_ResetConfirmTimer <= 0);
 
 		PaintSwitch(m_CrazyMode, m_Crazy);
 		PaintSwitch(m_FadeOnDeath, m_Fade);
