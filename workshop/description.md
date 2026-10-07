@@ -12,7 +12,6 @@ Inspired by the glowing eyes of Call of Duty Zombies. Give DayZ's infected glowi
 - **Per-body glow materials**: each zombie keeps its own vanilla skin, cloth and shading detail; only the eyes glow.
 - **Works on any map**: eyes are applied as zombies spawn. Tested on Chernarus, Livonia, Sakhal, Deer Isle, Melkart and Esseker, on DayZ 1.29 and 1.30 experimental.
 - **Saved permanently**: settings survive server restarts.
-- **Eyes stay visible**: glowing zombies never spawn with hats, helmets, masks or glasses covering their faces.
 
 ## Installation
 - Subscribe and add the mod to **both your server and your clients** (it is required on both, because the menu and the glow materials live client-side).
@@ -33,7 +32,7 @@ Open **`<server profile folder>`/DZNC_Zombies/Admins.json** and add your Steam64
 
 Add more admins by separating IDs with commas. Restart the server after editing; the file is read at startup.
 
-**DebugLineup** is for testing: set it to true and the first admin to join after a restart gets one of every zombie type lined up in front of them, so you can compare colors. Leave it false on a live server.
+**DebugLineup** is for testing: set it to true and the first admin to join after a restart gets one of every zombie type lined up in front of them, so you can compare colors. While it's on, glowing zombies also skip hats, masks and glasses so their eyes are easy to see. Leave it false on a live server.
 
 ## Using the menu
 Press **End** in game to open the Zombie Eyes menu. You can rebind it under Controls in the **DZNC** tab. Players who are not on the admin list just get a "not on the admin list" message.
@@ -81,7 +80,6 @@ Inspired by the glowing eyes of Call of Duty Zombies. Give DayZ's infected glowi
 [*][b]Per-body glow materials[/b]: each zombie keeps its own vanilla skin, cloth and shading detail; only the eyes glow.
 [*][b]Works on any map[/b]: eyes are applied as zombies spawn. Tested on Chernarus, Livonia, Sakhal, Deer Isle, Melkart and Esseker, on DayZ 1.29 and 1.30 experimental.
 [*][b]Saved permanently[/b]: settings survive server restarts.
-[*][b]Eyes stay visible[/b]: glowing zombies never spawn with hats, helmets, masks or glasses covering their faces.
 [/list]
 
 [h2]Installation[/h2]
@@ -105,7 +103,7 @@ Open [b]<server profile folder>/DZNC_Zombies/Admins.json[/b] and add your Steam6
 
 Add more admins by separating IDs with commas. Restart the server after editing; the file is read at startup.
 
-[b]DebugLineup[/b] is for testing: set it to true and the first admin to join after a restart gets one of every zombie type lined up in front of them, so you can compare colors. Leave it false on a live server.
+[b]DebugLineup[/b] is for testing: set it to true and the first admin to join after a restart gets one of every zombie type lined up in front of them, so you can compare colors. While it's on, glowing zombies also skip hats, masks and glasses so their eyes are easy to see. Leave it false on a live server.
 
 [h2]Using the menu[/h2]
 Press [b]End[/b] in game to open the Zombie Eyes menu. You can rebind it under Controls in the [b]DZNC[/b] tab. Players who are not on the admin list just get a "not on the admin list" message.

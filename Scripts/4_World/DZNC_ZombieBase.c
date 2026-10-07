@@ -1,4 +1,3 @@
-// Glowing eye zombies never wear anything on their heads, so the eyes stay visible.
 // Every zombie gets its eye color from the admin menu settings at runtime, so it works on any map.
 // DZNC_ config classes follow the setting of the vanilla type they inherit from.
 modded class ZombieBase
@@ -258,7 +257,7 @@ modded class ZombieBase
 
 	protected void DZNC_StripHeadgear()
 	{
-		if (!DZNC_IsGlowZombie())
+		if (!DZNC_StripsHeadgear())
 			return;
 
 		foreach (string slot : DZNC_BLOCKED_SLOTS)
@@ -379,19 +378,22 @@ modded class ZombieBase
 		SetObjectMaterial(0, DZNC_Eyes.GetMaterial(key, color, intensity));
 	}
 
-	bool DZNC_IsGlowZombie()
+	// Debug only: with DebugLineup on, the server keeps glowing zombies bare-headed so the eyes are easy to judge.
+	// Otherwise, and always on clients, attachments behave exactly like vanilla.
+	bool DZNC_StripsHeadgear()
 	{
+		if (!GetGame().IsServer() || !DZNC_EyeSettings.Get().m_Admins.DebugLineup)
+			return false;
+
 		string key = DZNC_GetSettingsKey();
 		if (key == "")
 			return GetType().IndexOf("DZNC_") == 0;
-		if (GetGame().IsServer())
-			return DZNC_EyeSettings.Get().GetCrazyMode() || DZNC_Eyes.IsColor(DZNC_EyeSettings.Get().GetColor(key));
-		return m_DZNC_Crazy || DZNC_Eyes.IsColor(m_DZNC_EyeColor);
+		return DZNC_EyeSettings.Get().GetCrazyMode() || DZNC_Eyes.IsColor(DZNC_EyeSettings.Get().GetColor(key));
 	}
 
 	override bool CanReceiveAttachment(EntityAI attachment, int slotId)
 	{
-		if (DZNC_IsGlowZombie() && DZNC_BLOCKED_SLOTS.Find(InventorySlots.GetSlotName(slotId)) != -1)
+		if (DZNC_StripsHeadgear() && DZNC_BLOCKED_SLOTS.Find(InventorySlots.GetSlotName(slotId)) != -1)
 			return false;
 
 		return super.CanReceiveAttachment(attachment, slotId);
@@ -402,7 +404,7 @@ modded class ZombieBase
 	{
 		super.EEItemAttached(item, slot_name);
 
-		if (GetGame().IsServer() && DZNC_IsGlowZombie() && DZNC_BLOCKED_SLOTS.Find(slot_name) != -1)
+		if (DZNC_StripsHeadgear() && DZNC_BLOCKED_SLOTS.Find(slot_name) != -1)
 			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().ObjectDelete, item);
 	}
 }
