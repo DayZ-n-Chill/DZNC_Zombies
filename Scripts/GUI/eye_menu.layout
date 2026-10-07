@@ -1,7 +1,7 @@
 PanelWidgetClass DZNC_EyeMenuRoot {
  color 0.09 0.09 0.09 0.94
  position 40 40
- size 560 694
+ size 560 710
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -607,7 +607,7 @@ ButtonWidgetClass ResetAll {
 ButtonWidgetClass RandomizeAll {
  color 0 0 0 0
  position 16 516
- size 318 44
+ size 528 40
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -642,36 +642,90 @@ ButtonWidgetClass RandomizeAll {
  }
 }
 CheckBoxWidgetClass CrazyMode {
- position 350 516
- size 194 44
+ position 16 566
+ size 26 26
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ checked 0
+}
+TextWidgetClass CrazyLabel {
+ ignorepointer 1
+ position 50 562
+ size 220 34
  hexactpos 1
  vexactpos 1
  hexactsize 1
  vexactsize 1
  text "CRAZY MODE"
  font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 18
+ "text halign" left
+ "text valign" center
+}
+CheckBoxWidgetClass FadeOnDeath {
+ position 286 566
+ size 26 26
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
  checked 0
+}
+TextWidgetClass FadeLabel {
+ ignorepointer 1
+ position 320 562
+ size 224 34
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "FADE ON DEATH"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 18
+ "text halign" left
+ "text valign" center
 }
 TextWidgetClass CrazyHint {
  visible 0
  ignorepointer 1
  color 0.7 0.7 0.7 1
- position 16 562
- size 528 20
+ position 16 596
+ size 258 18
  hexactpos 1
  vexactpos 1
  hexactsize 1
  vexactsize 1
- text "Eyes cycle colors every second"
+ text "Eyes cycle through colors rapidly"
  font "gui/fonts/sdf_MetronBook24"
  "exact text" 1
- "exact text size" 15
- "text halign" right
+ "exact text size" 14
+ "text halign" left
+ "text valign" center
+}
+TextWidgetClass FadeHint {
+ visible 0
+ ignorepointer 1
+ color 0.7 0.7 0.7 1
+ position 286 596
+ size 258 18
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Eyes fade out after a zombie dies"
+ font "gui/fonts/sdf_MetronBook24"
+ "exact text" 1
+ "exact text size" 14
+ "text halign" left
  "text valign" center
 }
 TextWidgetClass BrightnessTitle {
  ignorepointer 1
- position 16 588
+ position 16 618
  size 170 36
  hexactpos 1
  vexactpos 1
@@ -686,7 +740,7 @@ TextWidgetClass BrightnessTitle {
 }
 SliderWidgetClass BrightnessSlider {
  color 1 1 1 0.549
- position 190 594
+ position 190 624
  size 230 24
  hexactpos 1
  vexactpos 1
@@ -701,7 +755,7 @@ SliderWidgetClass BrightnessSlider {
 }
 TextWidgetClass BrightnessValue {
  ignorepointer 1
- position 430 588
+ position 430 618
  size 114 36
  hexactpos 1
  vexactpos 1
@@ -716,7 +770,7 @@ TextWidgetClass BrightnessValue {
 }
 TextWidgetClass Summary {
  ignorepointer 1
- position 16 632
+ position 16 656
  size 528 26
  hexactpos 1
  vexactpos 1
@@ -732,8 +786,8 @@ TextWidgetClass Summary {
 TextWidgetClass SpinHint {
  ignorepointer 1
  color 0.7 0.7 0.7 1
- position 16 662
- size 528 24
+ position 16 682
+ size 528 22
  hexactpos 1
  vexactpos 1
  hexactsize 1
