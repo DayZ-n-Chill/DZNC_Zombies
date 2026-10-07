@@ -206,36 +206,52 @@ class DZNC_Eyes
 		return color > 0 && color < COLOR_NAMES.Count();
 	}
 
-	// Handyman and short skirt models have their eyes in a different UV spot, so they use their own masks.
+	// Vanilla type -> file name of its vanilla body material, e.g. "hermit".
+	private static ref map<string, string> s_BodyBases = new map<string, string>;
+
+	static string GetVanillaMaterial(string type)
+	{
+		TStringArray mats = new TStringArray;
+		GetGame().ConfigGetTextArray("CfgVehicles " + type + " hiddenSelectionsMaterials", mats);
+		if (mats.Count() > 0)
+			return mats[0];
+		return "";
+	}
+
+	// "dz\characters\zombies\data\hermit.rvmat" -> "hermit"
+	static string GetBodyBase(string type)
+	{
+		string base;
+		if (s_BodyBases.Find(type, base))
+			return base;
+
+		base = GetVanillaMaterial(type);
+		base.Replace("/", "\\");
+		int slash = base.LastIndexOf("\\");
+		if (slash != -1)
+			base = base.Substring(slash + 1, base.Length() - slash - 1);
+		int dot = base.LastIndexOf(".");
+		if (dot != -1)
+			base = base.Substring(0, dot);
+		base.ToLower();
+
+		// ZmbF_ShortSkirt_black has no hiddenSelectionsMaterials anywhere in its chain.
+		if (base == "")
+			base = "shortskirt";
+
+		s_BodyBases.Set(type, base);
+		return base;
+	}
+
+	// Each vanilla body has its own copy of its material per glow color in data\bodies.
 	static string GetMaterial(string type, int color)
 	{
 		if (!IsColor(color))
-		{
-			TStringArray mats = new TStringArray;
-			GetGame().ConfigGetTextArray("CfgVehicles " + type + " hiddenSelectionsMaterials", mats);
-			if (mats.Count() > 0)
-				return mats[0];
-			return "";
-		}
+			return GetVanillaMaterial(type);
 
 		string colorName = COLOR_NAMES[color];
-		string family;
-		if (type.Contains("HandymanNormal"))
-			family = "HandyEyes";
-		else if (type.Contains("ShortSkirt"))
-			family = "SkirtEyes";
-
-		if (family != "")
-		{
-			if (colorName == "Yellow")
-				return "DZNC_Zombies\\data\\" + family + ".rvmat";
-			return "DZNC_Zombies\\data\\" + family + "." + colorName + ".rvmat";
-		}
-
-		if (colorName == "Yellow")
-			return "DZNC_Zombies\\data\\eyes.rvmat";
 		colorName.ToLower();
-		return "DZNC_Zombies\\data\\" + colorName + "-eyes.rvmat";
+		return "DZNC_Zombies\\data\\bodies\\" + GetBodyBase(type) + "_" + colorName + ".rvmat";
 	}
 }
 
