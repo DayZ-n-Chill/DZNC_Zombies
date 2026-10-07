@@ -4,6 +4,9 @@
 		<actions>
 			<input name="UADZNCZombieEyeMenu" loc="Zombie Eye Admin Menu" />
 		</actions>
+		<sorting name="dznc" loc="DZNC">
+			<input name="UADZNCZombieEyeMenu" />
+		</sorting>
 	</inputs>
 	<preset>
 		<input name="UADZNCZombieEyeMenu">

@@ -103,6 +103,6 @@ class Stage7
 };
 class Stage8
 {
-	texture="DZNC_Zombies\data\eyes_e_co.paa";
+	texture="DZNC_Zombies\data\JacketEyes.paa";
 	texGen="0";
 };

@@ -10,7 +10,9 @@ enum DZNC_EyeRPC
 	CLOSE_PREVIEW,				// client -> server: remove it
 	SET_MANY,					// client -> server: change a batch of zombie types at once
 	ROTATE_PREVIEW,				// client -> server: spin the preview zombie
-	SET_INTENSITY				// client -> server: change the global eye brightness step
+	SET_INTENSITY,				// client -> server: change the global eye brightness step
+	SET_CRAZY,					// client -> server: turn crazy mode on (1) or off (0)
+	SET_FADE					// client -> server: turn fade on death on (1) or off (0)
 }
 
 class DZNC_Eyes
@@ -20,158 +22,158 @@ class DZNC_Eyes
 	static const int INTENSITY_MAX = 10;
 	static const int INTENSITY_DEFAULT = 5;
 
-	// Index 0 leaves the zombie looking vanilla.
-	static ref TStringArray COLOR_NAMES = {"Vanilla", "Yellow", "Red", "Blue", "Green", "Orange"};
-	static ref array<int> COLOR_ARGB = {0xFF808080, 0xFFFFE000, 0xFFFF2020, 0xFF2080FF, 0xFF20FF40, 0xFFFF8000};
+	// Crazy mode cycles every zombie through these colors in order: Red, Orange, Yellow, Green, Blue, Indigo, Violet.
+	// The time per color is ZombieBase.DZNC_CRAZY_TICK_MS.
+	static ref array<int> CRAZY_COLORS = {2, 5, 1, 4, 3, 6, 7};
 
-	// Every vanilla infected class the glowing eye materials were made for.
-	static ref TStringArray ZOMBIE_TYPES = {
-		"ZmbM_HermitSkinny_Beige",
-		"ZmbF_BlueCollarFat_Blue",
-		"ZmbF_BlueCollarFat_Green",
-		"ZmbM_HermitSkinny_Black",
-		"ZmbM_HermitSkinny_Green",
-		"ZmbM_HermitSkinny_Red",
-		"ZmbM_FarmerFat_Beige",
-		"ZmbM_FarmerFat_Blue",
-		"ZmbM_FarmerFat_Brown",
-		"ZmbM_FarmerFat_Green",
-		"ZmbF_CitizenANormal_Beige",
-		"ZmbF_CitizenANormal_Brown",
-		"ZmbF_CitizenANormal_Blue",
-		"ZmbM_CitizenASkinny_Blue",
-		"ZmbM_CitizenASkinny_Brown",
-		"ZmbM_CitizenASkinny_Grey",
-		"ZmbM_CitizenASkinny_Red",
-		"ZmbM_CitizenBFat_Blue",
-		"ZmbM_CitizenBFat_Red",
-		"ZmbM_CitizenBFat_Green",
-		"ZmbF_CitizenBSkinny",
-		"ZmbM_PrisonerSkinny",
-		"ZmbM_FirefighterNormal",
-		"ZmbM_FishermanOld_Blue",
-		"ZmbM_FishermanOld_Green",
-		"ZmbM_FishermanOld_Grey",
-		"ZmbM_FishermanOld_Red",
-		"ZmbM_JournalistSkinny",
-		"ZmbF_JournalistNormal_Blue",
-		"ZmbF_JournalistNormal_Green",
-		"ZmbF_JournalistNormal_Red",
-		"ZmbF_JournalistNormal_White",
-		"ZmbM_ParamedicNormal_Black",
-		"ZmbF_ParamedicNormal_Blue",
-		"ZmbF_ParamedicNormal_Green",
-		"ZmbF_ParamedicNormal_Red",
-		"ZmbM_HikerSkinny_Blue",
-		"ZmbM_HikerSkinny_Green",
-		"ZmbM_HikerSkinny_Yellow",
-		"ZmbF_HikerSkinny_Grey",
-		"ZmbF_HikerSkinny_Red",
-		"ZmbM_HunterOld_Autumn",
-		"ZmbM_HunterOld_Spring",
-		"ZmbM_HunterOld_Summer",
-		"ZmbM_HunterOld_Winter",
-		"ZmbF_SurvivorNormal_Blue",
-		"ZmbF_SurvivorNormal_Orange",
-		"ZmbF_SurvivorNormal_Red",
-		"ZmbF_SurvivorNormal_White",
-		"ZmbM_PolicemanFat",
-		"ZmbF_PoliceWomanNormal",
-		"ZmbM_PolicemanSpecForce",
-		"ZmbM_SoldierNormal",
-		"ZmbM_usSoldier_normal_Woodland",
-		"ZmbM_usSoldier_normal_Desert",
-		"ZmbM_CommercialPilotOld_Blue",
-		"ZmbM_CommercialPilotOld_Olive",
-		"ZmbM_CommercialPilotOld_Brown",
-		"ZmbM_CommercialPilotOld_Grey",
-		"ZmbM_PatrolNormal_PautRev",
-		"ZmbM_PatrolNormal_Autumn",
-		"ZmbM_PatrolNormal_Flat",
-		"ZmbM_PatrolNormal_Summer",
-		"ZmbM_JoggerSkinny_Blue",
-		"ZmbM_JoggerSkinny_Green",
-		"ZmbM_JoggerSkinny_Red",
-		"ZmbF_JoggerSkinny_Brown",
-		"ZmbM_MotobikerFat_Beige",
-		"ZmbM_MotobikerFat_Black",
-		"ZmbM_MotobikerFat_Blue",
-		"ZmbM_VillagerOld_Blue",
-		"ZmbM_VillagerOld_Green",
-		"ZmbM_VillagerOld_White",
-		"ZmbM_SkaterYoung_Blue",
-		"ZmbM_SkaterYoung_Brown",
-		"ZmbM_SkaterYoung_Green",
-		"ZmbM_SkaterYoung_Grey",
-		"ZmbF_SkaterYoung_Striped",
-		"ZmbF_SkaterYoung_Violet",
-		"ZmbF_DoctorSkinny",
-		"ZmbF_BlueCollarFat_Red",
-		"ZmbF_BlueCollarFat_White",
-		"ZmbF_MechanicNormal_Beige",
-		"ZmbF_MechanicNormal_Green",
-		"ZmbF_MechanicNormal_Grey",
-		"ZmbF_MechanicNormal_Orange",
-		"ZmbM_MechanicSkinny_Blue",
-		"ZmbM_MechanicSkinny_Grey",
-		"ZmbM_MechanicSkinny_Green",
-		"ZmbM_MechanicSkinny_Red",
-		"ZmbM_ConstrWorkerNormal_Beige",
-		"ZmbM_ConstrWorkerNormal_Black",
-		"ZmbM_ConstrWorkerNormal_Green",
-		"ZmbM_ConstrWorkerNormal_Grey",
-		"ZmbM_HeavyIndustryWorker",
-		"ZmbM_OffshoreWorker_Green",
-		"ZmbM_OffshoreWorker_Orange",
-		"ZmbM_OffshoreWorker_Red",
-		"ZmbM_OffshoreWorker_Yellow",
-		"ZmbF_NurseFat",
-		"ZmbM_HandymanNormal_Beige",
-		"ZmbM_HandymanNormal_Blue",
-		"ZmbM_HandymanNormal_Green",
-		"ZmbM_HandymanNormal_Grey",
-		"ZmbM_HandymanNormal_White",
-		"ZmbM_DoctorFat",
-		"ZmbM_Jacket_beige",
-		"ZmbM_Jacket_black",
-		"ZmbM_Jacket_blue",
-		"ZmbM_Jacket_bluechecks",
-		"ZmbM_Jacket_brown",
-		"ZmbM_Jacket_greenchecks",
-		"ZmbM_Jacket_grey",
-		"ZmbM_Jacket_khaki",
-		"ZmbM_Jacket_magenta",
-		"ZmbM_Jacket_stripes",
-		"ZmbF_PatientOld",
-		"ZmbM_PatientSkinny",
-		"ZmbF_ShortSkirt_beige",
-		"ZmbF_ShortSkirt_black",
-		"ZmbF_ShortSkirt_brown",
-		"ZmbF_ShortSkirt_green",
-		"ZmbF_ShortSkirt_grey",
-		"ZmbF_ShortSkirt_checks",
-		"ZmbF_ShortSkirt_red",
-		"ZmbF_ShortSkirt_stripes",
-		"ZmbF_ShortSkirt_white",
-		"ZmbF_ShortSkirt_yellow",
-		"ZmbF_VillagerOld_Red",
-		"ZmbF_MilkMaidOld_Beige",
-		"ZmbF_MilkMaidOld_Black",
-		"ZmbF_MilkMaidOld_Green",
-		"ZmbF_MilkMaidOld_Grey",
-		"ZmbM_priestPopSkinny",
-		"ZmbM_ClerkFat_Brown",
-		"ZmbM_ClerkFat_Grey",
-		"ZmbM_ClerkFat_Khaki",
-		"ZmbM_ClerkFat_White",
-		"ZmbF_Clerk_Normal_Blue",
-		"ZmbF_Clerk_Normal_White",
-		"ZmbF_Clerk_Normal_Green",
-		"ZmbF_Clerk_Normal_Red",
-		"ZmbF_ClerkFat_Black",
-		"ZmbF_ClerkFat_GreyPattern",
-		"ZmbF_ClerkFat_BluePattern"
+	// Index 0 leaves the zombie looking vanilla. Only append new colors, saved settings store these indices.
+	static ref TStringArray COLOR_NAMES = {"Vanilla", "Yellow", "Red", "Blue", "Green", "Orange", "Indigo", "Violet"};
+	static ref array<int> COLOR_ARGB = {0xFF808080, 0xFFFFE000, 0xFFFF2020, 0xFF2080FF, 0xFF20FF40, 0xFFFF8000, 0xFF4B2BFF, 0xFFB040FF};
+
+	// Vanilla body materials that have glow copies in data\bodies, named <body>_<color>_<step>.rvmat.
+	// To support a new body, add its rvmat file name here (lowercase, no extension).
+	static ref TStringArray SUPPORTED_BODIES = {
+		"hermit", "bluecollar_fat_f", "farmer", "citizena_normal_f", "citizena_skinny_m",
+		"citizenb_fat_m", "citizenb_skinny_f", "prisoner_skinny_m", "firefighter_normal_m", "fisherman_old_m",
+		"journalist_skinny_m", "journalist_normal_f", "paramedic_normal_m", "paramedic_normal_f", "hiker_skinny_m",
+		"hiker_skinny_f", "hunter_old_m", "survivor_normal_f", "policeman_fat_m", "policewoman_normal_f",
+		"policemanspecialforce_normal_m", "soldier_normal_m", "ussoldier_normal_m", "commercialpilot_old_m", "patrol_normal_m",
+		"jogger_skinny_m", "jogger_skinny_f", "motobiker_fat_m", "villager_old_m", "skater_young_m",
+		"skater_young_f", "doctor_skinny_f", "mechanic_normal_f", "mechanic_skinny_m", "constructionworker_normal_m",
+		"heavyindustryworker_normal_m", "offshoreworker_normal_m", "nurse_fat_f", "coveralls", "doctor_fat_m",
+		"jacket", "patient_old_f", "patient_skinny_m", "shortskirt", "villager_old_f",
+		"milkmaid_old_f", "priestpop_skinny_m", "clerk_fat_m", "clerka_normal_f", "clerkb_fat_f",
+		"gamedev_m", "santa", "armyofficer_fat_m"
 	};
+
+	// Every infected class in CfgVehicles whose body has glow materials, sorted. Filled once by Discover()
+	// when the game is created, so server and client build the same list from the same config.
+	static ref TStringArray ZOMBIE_TYPES = new TStringArray;
+
+	// Infected type -> file name of its vanilla body material, e.g. "hermit".
+	private static ref map<string, string> s_BodyBases = new map<string, string>;
+
+	static void Discover(CGame game)
+	{
+		ZOMBIE_TYPES.Clear();
+		s_BodyBases.Clear();
+
+		TStringArray infected = new TStringArray;
+		TStringArray fullPath = new TStringArray;
+		int count = game.ConfigGetChildrenCount("CfgVehicles");
+		for (int i = 0; i < count; i++)
+		{
+			string name;
+			if (!game.ConfigGetChildName("CfgVehicles", i, name) || name.IndexOf("DZNC_") == 0)
+				continue;
+			if (game.ConfigGetInt("CfgVehicles " + name + " scope") != 2 || !IsInfected(game, name, fullPath))
+				continue;
+
+			infected.Insert(name);
+			s_BodyBases.Set(name, ReadBodyBase(game, name));
+		}
+
+		foreach (string type : infected)
+		{
+			string body = s_BodyBases.Get(type);
+			if (body == "")
+			{
+				body = FamilyBodyBase(type, infected);
+				s_BodyBases.Set(type, body);
+			}
+			if (SUPPORTED_BODIES.Find(body) != -1)
+				ZOMBIE_TYPES.Insert(type);
+		}
+		ZOMBIE_TYPES.Sort();
+	}
+
+	// Script class ZombieMaleBase and ZombieFemaleBase both extend ZombieBase, so any of the three in the config chain counts.
+	protected static bool IsInfected(CGame game, string name, TStringArray fullPath)
+	{
+		fullPath.Clear();
+		game.ConfigGetFullPath("CfgVehicles " + name, fullPath);
+		foreach (string parent : fullPath)
+		{
+			parent.ToLower();
+			if (parent == "zombiebase" || parent == "zombiemalebase" || parent == "zombiefemalebase")
+				return true;
+		}
+		return false;
+	}
+
+	// First non-empty hiddenSelectionsMaterials entry, walking up the parent chain in case a child overrides it with blanks.
+	protected static string ReadBodyBase(CGame game, string name)
+	{
+		TStringArray mats = new TStringArray;
+		string cls = name;
+		while (cls != "")
+		{
+			mats.Clear();
+			game.ConfigGetTextArray("CfgVehicles " + cls + " hiddenSelectionsMaterials", mats);
+			foreach (string mat : mats)
+			{
+				string base = FileBaseName(mat);
+				if (base != "")
+					return base;
+			}
+
+			string parent;
+			if (!game.ConfigGetBaseName("CfgVehicles " + cls, parent))
+				break;
+			cls = parent;
+		}
+		return "";
+	}
+
+	// Types with no material anywhere in their chain borrow the body of another outfit of the same family.
+	protected static string FamilyBodyBase(string type, TStringArray infected)
+	{
+		string family = FamilyOf(type);
+		foreach (string other : infected)
+		{
+			string body = s_BodyBases.Get(other);
+			if (body != "" && FamilyOf(other) == family)
+				return body;
+		}
+		// ZmbF_ShortSkirt_Black has no hiddenSelectionsMaterials anywhere in its chain.
+		if (family == "ZmbF_ShortSkirt")
+			return "shortskirt";
+		return "";
+	}
+
+	// "dz\characters\zombies\data\hermit.rvmat" -> "hermit"
+	protected static string FileBaseName(string path)
+	{
+		string base = path;
+		base.Replace("/", "\\");
+		int slash = base.LastIndexOf("\\");
+		if (slash != -1)
+			base = base.Substring(slash + 1, base.Length() - slash - 1);
+		int dot = base.LastIndexOf(".");
+		if (dot != -1)
+			base = base.Substring(0, dot);
+		base.TrimInPlace();
+		base.ToLower();
+		return base;
+	}
+
+	// The discovered type matching a name regardless of case, or the name itself if none does.
+	static string MatchType(string name)
+	{
+		if (ZOMBIE_TYPES.Find(name) != -1)
+			return name;
+
+		string lower = name;
+		lower.ToLower();
+		foreach (string type : ZOMBIE_TYPES)
+		{
+			string typeLower = type;
+			typeLower.ToLower();
+			if (typeLower == lower)
+				return type;
+		}
+		return name;
+	}
 
 	// "ZmbM_HermitSkinny_Beige" -> "Hermit Skinny Beige (M)"
 	static string PrettyName(string type)
@@ -221,9 +223,6 @@ class DZNC_Eyes
 		return intensity;
 	}
 
-	// Vanilla type -> file name of its vanilla body material, e.g. "hermit".
-	private static ref map<string, string> s_BodyBases = new map<string, string>;
-
 	static string GetVanillaMaterial(string type)
 	{
 		TStringArray mats = new TStringArray;
@@ -233,29 +232,10 @@ class DZNC_Eyes
 		return "";
 	}
 
-	// "dz\characters\zombies\data\hermit.rvmat" -> "hermit"
+	// Resolved by Discover() for every infected type, e.g. "ZmbM_HermitSkinny_Beige" -> "hermit".
 	static string GetBodyBase(string type)
 	{
-		string base;
-		if (s_BodyBases.Find(type, base))
-			return base;
-
-		base = GetVanillaMaterial(type);
-		base.Replace("/", "\\");
-		int slash = base.LastIndexOf("\\");
-		if (slash != -1)
-			base = base.Substring(slash + 1, base.Length() - slash - 1);
-		int dot = base.LastIndexOf(".");
-		if (dot != -1)
-			base = base.Substring(0, dot);
-		base.ToLower();
-
-		// ZmbF_ShortSkirt_black has no hiddenSelectionsMaterials anywhere in its chain.
-		if (base == "")
-			base = "shortskirt";
-
-		s_BodyBases.Set(type, base);
-		return base;
+		return s_BodyBases.Get(type);
 	}
 
 	// Each vanilla body has its own copy of its material per glow color and brightness step in data\bodies.
@@ -274,6 +254,8 @@ class DZNC_EyeSettingsData
 {
 	ref map<string, int> ZombieEyes = new map<string, int>;
 	int Intensity = DZNC_Eyes.INTENSITY_DEFAULT;
+	bool CrazyMode = false;
+	bool FadeOnDeath = false;
 }
 
 class DZNC_AdminData
@@ -315,10 +297,25 @@ class DZNC_EyeSettings
 			Print("[DZNC_Zombies] " + error);
 		// Files written before brightness existed have no Intensity field and keep the default.
 		m_Data.Intensity = DZNC_Eyes.ClampIntensity(m_Data.Intensity);
+		MatchSavedTypes();
 		if (!FileExist(ADMINS_FILE))
 			JsonFileLoader<DZNC_AdminData>.SaveFile(ADMINS_FILE, m_Admins, error);
 		else if (!JsonFileLoader<DZNC_AdminData>.LoadFile(ADMINS_FILE, m_Admins, error))
 			Print("[DZNC_Zombies] " + error);
+	}
+
+	// Older files used the hand written type list, which had some names in the wrong case (ZmbF_ShortSkirt_black).
+	// An exact key always wins over a case-only match.
+	protected void MatchSavedTypes()
+	{
+		map<string, int> matched = new map<string, int>;
+		foreach (string key, int color : m_Data.ZombieEyes)
+		{
+			string type = DZNC_Eyes.MatchType(key);
+			if (type == key || !matched.Contains(type))
+				matched.Set(type, color);
+		}
+		m_Data.ZombieEyes = matched;
 	}
 
 	void Save()
@@ -354,5 +351,34 @@ class DZNC_EyeSettings
 	void SetIntensity(int intensity)
 	{
 		m_Data.Intensity = DZNC_Eyes.ClampIntensity(intensity);
+	}
+
+	bool GetCrazyMode()
+	{
+		return m_Data.CrazyMode;
+	}
+
+	void SetCrazyMode(bool crazy)
+	{
+		m_Data.CrazyMode = crazy;
+	}
+
+	bool GetFadeOnDeath()
+	{
+		return m_Data.FadeOnDeath;
+	}
+
+	void SetFadeOnDeath(bool fade)
+	{
+		m_Data.FadeOnDeath = fade;
+	}
+}
+
+// Same place vanilla walks CfgVehicles for its character list. GetGame() is not set yet inside this constructor.
+modded class DayZGame
+{
+	void DayZGame()
+	{
+		DZNC_Eyes.Discover(this);
 	}
 }
