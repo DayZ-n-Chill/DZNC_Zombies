@@ -15,13 +15,14 @@ class CfgMods
 	{
 		dir = "DZNC_Zombies";
 		picture = "";
-		action = "";
-		hideName = 1;
+		action = "https://discord.gg/dayznchill";
+		hideName = 0;
 		hidePicture = 1;
-		name = "DZNC_Zombies";
+		name = "Glowing Zombie Eyes 2.0";
+		overview = "Glowing-eyed infected for DayZ by DayZ n' Chill.";
 		author = "DayZ n' Chill";
 		authorID = "0";
-		version = "1.0";
+		version = "2.0";
 		extra = 0;
 		type = "mod";
 

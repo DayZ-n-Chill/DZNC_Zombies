@@ -4,8 +4,10 @@
 class DZNC_EyeMenu extends UIScriptedMenu
 {
 	static const int MENU_ID = 0x445A4E;
-	static const int TAB_ON = 0xFFC8102E;
-	static const int TAB_OFF = 0xFF3A3A3A;
+	static const int TAB_ON = 0xFFA8102A;
+	static const int TAB_OFF = 0xFF212124;
+	static const int SWITCH_ON = 0xFFC8142E;
+	static const int SWITCH_OFF = 0xFF4C4C52;
 	static const int SELECTOR_TEXT_ON = 0xFFFFFFFF;
 	static const int SELECTOR_TEXT_OFF = 0xFF808080;
 	static const int SELECTOR_SWATCH_OFF_ALPHA = 0x50000000;
@@ -28,6 +30,14 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	static const float PANEL_LEFT = 0.05;
 	static const int INTENSITY_MIN = 1;
 	static const int INTENSITY_MAX = 10;
+	// Layout sizes for the hand-built slider and switches, in layout pixels.
+	static const float SLIDER_WIDTH = 528;
+	static const float SLIDER_KNOB = 18;
+	static const float SWITCH_KNOB_OFF_X = 481;
+	static const float SWITCH_KNOB_ON_X = 505;
+	static const float SWITCH_KNOB_Y = 7;
+	static const int POPUP_SELECTED = 0;
+	static const int POPUP_BULK = 1;
 
 	protected ref array<int> m_Colors;
 	protected ref array<int> m_ListTypes = new array<int>;	// list row -> zombie index
@@ -35,6 +45,8 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	protected int m_LastGlowColor = 1;
 	protected int m_BulkColor = 1;
 	protected int m_Intensity = 5;
+	protected bool m_Crazy;
+	protected bool m_Fade;
 	protected bool m_ChangedOnly;
 	protected float m_ResetConfirmTimer;
 	protected bool m_FillingList;
@@ -42,34 +54,40 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	protected bool m_Dragging;
 	protected int m_DragLastX;
 	protected bool m_MovingMenu;
+	protected bool m_DraggingSlider;
 	protected float m_MoveOffsetX;
 	protected float m_MoveOffsetY;
 	protected float m_Yaw;
 	protected float m_SentYaw;
 	protected float m_RotateSendTimer;
 	protected bool m_PreviewPending;
+	protected int m_PopupTarget;
 
-	protected ButtonWidget m_FilterChanged;
+	protected ButtonWidget m_FilterAll;
+	protected ButtonWidget m_FilterGlowing;
 	protected EditBoxWidget m_SearchBox;
 	protected Widget m_SearchHint;
 	protected TextListboxWidget m_ZombieList;
 	protected ButtonWidget m_ListModeVanilla;
 	protected ButtonWidget m_ListModeGlow;
+	protected Widget m_ListColorPicker;
 	protected TextWidget m_ListColorName;
 	protected Widget m_ListColorSwatch;
 	protected ButtonWidget m_ListApplyFamily;
 	protected Widget m_Header;
 	protected Widget m_Close;
+	protected Widget m_BulkColorPicker;
 	protected TextWidget m_BulkColorName;
 	protected Widget m_BulkColorSwatch;
 	protected ButtonWidget m_SetAll;
 	protected ButtonWidget m_ResetAll;
-	protected CheckBoxWidget m_CrazyMode;
-	protected Widget m_CrazyHint;
-	protected CheckBoxWidget m_FadeOnDeath;
-	protected Widget m_FadeHint;
-	protected SliderWidget m_BrightnessSlider;
+	protected Widget m_CrazyMode;
+	protected Widget m_FadeOnDeath;
+	protected Widget m_BrightnessSlider;
+	protected Widget m_BrightnessFill;
+	protected Widget m_BrightnessKnob;
 	protected TextWidget m_BrightnessValue;
+	protected Widget m_ColorPopup;
 	protected TextWidget m_Summary;
 
 	static void Open(array<int> colors, int intensity, int crazy, int fade)
@@ -89,30 +107,42 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	override Widget Init()
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("DZNC_Zombies/Scripts/GUI/eye_menu.layout");
-		m_FilterChanged = ButtonWidget.Cast(layoutRoot.FindAnyWidget("FilterChanged"));
+		m_FilterAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("FilterAll"));
+		m_FilterGlowing = ButtonWidget.Cast(layoutRoot.FindAnyWidget("FilterGlowing"));
 		m_SearchBox = EditBoxWidget.Cast(layoutRoot.FindAnyWidget("SearchBox"));
 		m_SearchHint = layoutRoot.FindAnyWidget("SearchHint");
 		m_ZombieList = TextListboxWidget.Cast(layoutRoot.FindAnyWidget("ZombieList"));
 		m_ListModeVanilla = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ListModeVanilla"));
 		m_ListModeGlow = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ListModeGlow"));
+		m_ListColorPicker = layoutRoot.FindAnyWidget("ListColorPicker");
 		m_ListColorName = TextWidget.Cast(layoutRoot.FindAnyWidget("ListColorName"));
 		m_ListColorSwatch = layoutRoot.FindAnyWidget("ListColorSwatch");
 		m_ListApplyFamily = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ListApplyFamily"));
 		m_Header = layoutRoot.FindAnyWidget("Header");
 		m_Close = layoutRoot.FindAnyWidget("Close");
+		m_BulkColorPicker = layoutRoot.FindAnyWidget("BulkColorPicker");
 		m_BulkColorName = TextWidget.Cast(layoutRoot.FindAnyWidget("BulkColorName"));
 		m_BulkColorSwatch = layoutRoot.FindAnyWidget("BulkColorSwatch");
 		m_SetAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("SetAll"));
 		m_ResetAll = ButtonWidget.Cast(layoutRoot.FindAnyWidget("ResetAll"));
-		m_Summary = TextWidget.Cast(layoutRoot.FindAnyWidget("Summary"));
-		m_CrazyMode = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("CrazyMode"));
-		m_CrazyHint = layoutRoot.FindAnyWidget("CrazyHint");
-		m_FadeOnDeath = CheckBoxWidget.Cast(layoutRoot.FindAnyWidget("FadeOnDeath"));
-		m_FadeHint = layoutRoot.FindAnyWidget("FadeHint");
-		m_BrightnessSlider = SliderWidget.Cast(layoutRoot.FindAnyWidget("BrightnessSlider"));
+		m_CrazyMode = layoutRoot.FindAnyWidget("CrazyMode");
+		m_FadeOnDeath = layoutRoot.FindAnyWidget("FadeOnDeath");
+		m_BrightnessSlider = layoutRoot.FindAnyWidget("BrightnessSlider");
+		m_BrightnessFill = layoutRoot.FindAnyWidget("BrightnessFill");
+		m_BrightnessKnob = layoutRoot.FindAnyWidget("BrightnessKnob");
 		m_BrightnessValue = TextWidget.Cast(layoutRoot.FindAnyWidget("BrightnessValue"));
-		m_BrightnessSlider.SetMinMax(INTENSITY_MIN, INTENSITY_MAX);
-		m_BrightnessSlider.SetStep(1);
+		m_ColorPopup = layoutRoot.FindAnyWidget("ColorPopup");
+		m_Summary = TextWidget.Cast(layoutRoot.FindAnyWidget("Summary"));
+
+		// The color popup lists every glow color, in the same order as the color table.
+		for (int color = 1; color < DZNC_Eyes.COLOR_NAMES.Count(); color++)
+		{
+			Widget pick = layoutRoot.FindAnyWidget("Pick" + color);
+			if (!pick)
+				continue;
+			TextWidget.Cast(pick.FindAnyWidget(pick.GetName() + "_label")).SetText(DZNC_Eyes.COLOR_NAMES[color]);
+			pick.FindAnyWidget(pick.GetName() + "_swatch").SetColor(DZNC_Eyes.COLOR_ARGB[color]);
+		}
 
 		int screenW, screenH;
 		GetScreenSize(screenW, screenH);
@@ -144,9 +174,8 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	{
 		m_Colors = colors;
 		m_Intensity = Math.Clamp(intensity, INTENSITY_MIN, INTENSITY_MAX);
-		m_BrightnessSlider.SetCurrent(m_Intensity);
-		m_CrazyMode.SetChecked(crazy != 0);
-		m_FadeOnDeath.SetChecked(fade != 0);
+		m_Crazy = crazy != 0;
+		m_Fade = fade != 0;
 		ShowPreview();
 		RefreshList();
 		RefreshAll();
@@ -155,9 +184,35 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		int color = m_Colors[m_Index];
+		string name = w.GetName();
 
-		switch (w.GetName())
+		// Picking a color from the popup: the selected zombie starts glowing in it, or the bulk color changes.
+		if (name.IndexOf("Pick") == 0)
 		{
+			int picked = name.Substring(4, name.Length() - 4).ToInt();
+			m_ColorPopup.Show(false);
+			if (m_PopupTarget == POPUP_SELECTED)
+			{
+				SetCurrent(picked);
+			}
+			else
+			{
+				m_BulkColor = picked;
+				RefreshAll();
+			}
+			return true;
+		}
+
+		switch (name)
+		{
+			case "FilterAll":
+				m_ChangedOnly = false;
+				RefreshList();
+				return true;
+			case "FilterGlowing":
+				m_ChangedOnly = true;
+				RefreshList();
+				return true;
 			// The eye controls under the list act on the selected zombie.
 			case "ListModeVanilla":
 				SetCurrent(0);
@@ -166,27 +221,14 @@ class DZNC_EyeMenu extends UIScriptedMenu
 				if (!DZNC_Eyes.IsColor(color))
 					SetCurrent(ShownColor());
 				return true;
-			// The arrows always step one color from the one shown and switch the zombie to glowing.
-			case "ListPrevColor":
-				SetCurrent(CycleGlow(ShownColor(), -1));
-				return true;
-			case "ListNextColor":
-				SetCurrent(CycleGlow(ShownColor(), 1));
+			case "ListColorPicker":
+				ToggleColorPopup(POPUP_SELECTED, m_ListColorPicker);
 				return true;
 			case "ListApplyFamily":
 				SetTypes(FamilyTypes(DZNC_Eyes.ZOMBIE_TYPES[m_Index]), color);
 				return true;
-			case "FilterChanged":
-				m_ChangedOnly = !m_ChangedOnly;
-				RefreshList();
-				return true;
-			case "BulkPrevColor":
-				m_BulkColor = CycleGlow(m_BulkColor, -1);
-				RefreshAll();
-				return true;
-			case "BulkNextColor":
-				m_BulkColor = CycleGlow(m_BulkColor, 1);
-				RefreshAll();
+			case "BulkColorPicker":
+				ToggleColorPopup(POPUP_BULK, m_BulkColorPicker);
 				return true;
 			case "SetAll":
 				SetTypes(DZNC_Eyes.ZOMBIE_TYPES, m_BulkColor);
@@ -195,10 +237,12 @@ class DZNC_EyeMenu extends UIScriptedMenu
 				RandomizeAll();
 				return true;
 			case "CrazyMode":
-				SendToggle(m_CrazyMode, DZNC_EyeRPC.SET_CRAZY);
+				m_Crazy = !m_Crazy;
+				SendToggle(m_Crazy, DZNC_EyeRPC.SET_CRAZY);
 				return true;
 			case "FadeOnDeath":
-				SendToggle(m_FadeOnDeath, DZNC_EyeRPC.SET_FADE);
+				m_Fade = !m_Fade;
+				SendToggle(m_Fade, DZNC_EyeRPC.SET_FADE);
 				return true;
 			case "ResetAll":
 				// Wiping every setting takes a second click so it can't happen by accident.
@@ -220,33 +264,14 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		return false;
 	}
 
+	// The list narrows down with every key typed into the search box.
 	override bool OnChange(Widget w, int x, int y, bool finished)
 	{
-		// The list narrows down with every key typed into the search box.
-		if (w == m_SearchBox)
-		{
-			RefreshList();
-			return true;
-		}
+		if (w != m_SearchBox)
+			return super.OnChange(w, x, y, finished);
 
-		// The brightness slider snaps to whole steps; the server hears about each new step once.
-		if (w == m_BrightnessSlider)
-		{
-			int step = Math.Round(m_BrightnessSlider.GetCurrent());
-			step = Math.Clamp(step, INTENSITY_MIN, INTENSITY_MAX);
-			m_BrightnessSlider.SetCurrent(step);
-			if (step != m_Intensity)
-			{
-				m_Intensity = step;
-				ScriptRPC rpc = new ScriptRPC();
-				rpc.Write(m_Intensity);
-				rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.SET_INTENSITY, true);
-				RefreshAll();
-			}
-			return true;
-		}
-
-		return super.OnChange(w, x, y, finished);
+		RefreshList();
+		return true;
 	}
 
 	override bool OnItemSelected(Widget w, int x, int y, int row, int column, int oldRow, int oldColumn)
@@ -259,16 +284,32 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		return true;
 	}
 
-	// The checkbox has already flipped by the time the click arrives, like vanilla's script console.
-	protected void SendToggle(CheckBoxWidget box, int rpcType)
+	protected void SendToggle(bool on, int rpcType)
 	{
 		int value = 0;
-		if (box.IsChecked())
+		if (on)
 			value = 1;
 		ScriptRPC rpc = new ScriptRPC();
 		rpc.Write(value);
 		rpc.Send(GetGame().GetPlayer(), rpcType, true);
 		RefreshAll();
+	}
+
+	// Opens the color list under the selector that was clicked, or closes it when clicked again.
+	protected void ToggleColorPopup(int target, Widget opener)
+	{
+		if (m_ColorPopup.IsVisible() && m_PopupTarget == target)
+		{
+			m_ColorPopup.Show(false);
+			return;
+		}
+
+		m_PopupTarget = target;
+		float x, y, w, h;
+		opener.GetPos(x, y);
+		opener.GetSize(w, h);
+		m_ColorPopup.SetPos(x, y + h + 2);
+		m_ColorPopup.Show(true);
 	}
 
 	protected void SelectZombie(int index)
@@ -285,12 +326,6 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		if (DZNC_Eyes.IsColor(color))
 			return color;
 		return m_LastGlowColor;
-	}
-
-	protected int CycleGlow(int color, int step)
-	{
-		int glowCount = DZNC_Eyes.COLOR_NAMES.Count() - 1;
-		return (color - 1 + step + glowCount) % glowCount + 1;
 	}
 
 	protected TStringArray FamilyTypes(string type)
@@ -469,16 +504,17 @@ class DZNC_EyeMenu extends UIScriptedMenu
 
 		m_BulkColorName.SetText(DZNC_Eyes.COLOR_NAMES[m_BulkColor]);
 		m_BulkColorSwatch.SetColor(DZNC_Eyes.COLOR_ARGB[m_BulkColor]);
-		string setAll = "SET ALL TO " + EyeLabel(m_BulkColor);
-		setAll.ToUpper();
-		Label(m_SetAll, setAll);
+		string bulkName = DZNC_Eyes.COLOR_NAMES[m_BulkColor];
+		bulkName.ToLower();
+		Label(m_SetAll, "Set all to " + bulkName);
 		if (m_ResetConfirmTimer > 0)
-			Label(m_ResetAll, "CLICK AGAIN TO CONFIRM");
+			Label(m_ResetAll, "Click again to confirm");
 		else
-			Label(m_ResetAll, "RESET ALL TO VANILLA");
-		m_CrazyHint.Show(m_CrazyMode.IsChecked());
-		m_FadeHint.Show(m_FadeOnDeath.IsChecked());
-		m_BrightnessValue.SetText(m_Intensity.ToString() + " / " + INTENSITY_MAX);
+			Label(m_ResetAll, "Reset to vanilla");
+
+		PaintSwitch(m_CrazyMode, m_Crazy);
+		PaintSwitch(m_FadeOnDeath, m_Fade);
+		PaintSlider();
 
 		int glowing;
 		foreach (int c : m_Colors)
@@ -486,9 +522,57 @@ class DZNC_EyeMenu extends UIScriptedMenu
 			if (DZNC_Eyes.IsColor(c))
 				glowing++;
 		}
-		m_Summary.SetText(glowing.ToString() + " of " + m_Colors.Count() + " zombie types have glowing eyes");
+		m_Summary.SetText(glowing.ToString() + " of " + m_Colors.Count() + " zombie types glowing");
 
 		RefreshListColors();
+	}
+
+	// Switches are a pill of two circles and a bar, with a white knob that sits left when off and right when on.
+	protected void PaintSwitch(Widget row, bool on)
+	{
+		string prefix = row.GetName();
+		int trackColor = SWITCH_OFF;
+		float knobX = SWITCH_KNOB_OFF_X;
+		if (on)
+		{
+			trackColor = SWITCH_ON;
+			knobX = SWITCH_KNOB_ON_X;
+		}
+		row.FindAnyWidget(prefix + "_trackL").SetColor(trackColor);
+		row.FindAnyWidget(prefix + "_trackR").SetColor(trackColor);
+		row.FindAnyWidget(prefix + "_trackC").SetColor(trackColor);
+		row.FindAnyWidget(prefix + "_knob").SetPos(knobX, SWITCH_KNOB_Y);
+	}
+
+	protected void PaintSlider()
+	{
+		float fill = SLIDER_WIDTH * (m_Intensity - INTENSITY_MIN) / (INTENSITY_MAX - INTENSITY_MIN);
+		float fillW, fillH;
+		m_BrightnessFill.GetSize(fillW, fillH);
+		m_BrightnessFill.SetSize(fill, fillH);
+		float knobX = Math.Clamp(fill - SLIDER_KNOB * 0.5, 0, SLIDER_WIDTH - SLIDER_KNOB);
+		float knobOldX, knobY;
+		m_BrightnessKnob.GetPos(knobOldX, knobY);
+		m_BrightnessKnob.SetPos(knobX, knobY);
+		m_BrightnessValue.SetText(m_Intensity.ToString() + " / " + INTENSITY_MAX);
+	}
+
+	// The slider snaps to whole steps under the mouse; the server hears about each new step once.
+	protected void UpdateSliderFromMouse(int mouseX)
+	{
+		float sliderX, sliderY, sliderW, sliderH;
+		m_BrightnessSlider.GetScreenPos(sliderX, sliderY);
+		m_BrightnessSlider.GetScreenSize(sliderW, sliderH);
+		float t = Math.Clamp((mouseX - sliderX) / sliderW, 0, 1);
+		int step = Math.Round(INTENSITY_MIN + t * (INTENSITY_MAX - INTENSITY_MIN));
+		if (step == m_Intensity)
+			return;
+
+		m_Intensity = step;
+		ScriptRPC rpc = new ScriptRPC();
+		rpc.Write(m_Intensity);
+		rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.SET_INTENSITY, true);
+		PaintSlider();
 	}
 
 	// Rewrites the eye column in place so the list keeps its rows, scroll and selection after a change.
@@ -505,10 +589,8 @@ class DZNC_EyeMenu extends UIScriptedMenu
 
 	protected void RefreshList()
 	{
-		if (m_ChangedOnly)
-			Label(m_FilterChanged, "SHOWING GLOWING ONLY  -  CLICK TO SHOW ALL");
-		else
-			Label(m_FilterChanged, "SHOWING ALL ZOMBIES  -  CLICK TO SHOW GLOWING ONLY");
+		Paint(m_FilterAll, TabColor(!m_ChangedOnly));
+		Paint(m_FilterGlowing, TabColor(m_ChangedOnly));
 
 		// Matches the readable name or the class name, ignoring case.
 		string search = m_SearchBox.GetText();
@@ -556,15 +638,9 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		TextWidget.Cast(button.FindAnyWidget(button.GetName() + "_label")).SetText(text);
 	}
 
-	protected string EyeLabel(int color)
-	{
-		if (DZNC_Eyes.IsColor(color))
-			return DZNC_Eyes.COLOR_NAMES[color] + " eyes";
-		return "vanilla eyes";
-	}
-
-	// A left press on the header (not the close button) drags the menu around; a press anywhere outside
-	// the menu spins the preview zombie, like the inventory character. The press decides which, until release.
+	// What a left press does is decided when it starts, until release: the header (not the close button)
+	// drags the menu, the brightness slider follows the mouse, and anywhere outside the menu spins the
+	// preview zombie like the inventory character. A press outside the open color list closes it.
 	protected void UpdateMouseDrag(float timeslice)
 	{
 		int mouseX, mouseY;
@@ -575,9 +651,13 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		{
 			m_Dragging = false;
 			m_MovingMenu = false;
+			m_DraggingSlider = false;
 		}
 		else if (!m_MouseWasHeld)
 		{
+			if (m_ColorPopup.IsVisible() && !IsOver(m_ColorPopup, mouseX, mouseY) && !IsOver(m_ListColorPicker, mouseX, mouseY) && !IsOver(m_BulkColorPicker, mouseX, mouseY))
+				m_ColorPopup.Show(false);
+
 			if (IsOver(m_Header, mouseX, mouseY) && !IsOver(m_Close, mouseX, mouseY))
 			{
 				// Same offset-then-SetPos pattern as the vanilla item diagnostic window.
@@ -586,6 +666,10 @@ class DZNC_EyeMenu extends UIScriptedMenu
 				m_MoveOffsetX = menuX - mouseX;
 				m_MoveOffsetY = menuY - mouseY;
 				m_MovingMenu = true;
+			}
+			else if (IsOver(m_BrightnessSlider, mouseX, mouseY) && !m_ColorPopup.IsVisible())
+			{
+				m_DraggingSlider = true;
 			}
 			else if (!IsOver(layoutRoot, mouseX, mouseY))
 			{
@@ -597,6 +681,9 @@ class DZNC_EyeMenu extends UIScriptedMenu
 
 		if (m_MovingMenu)
 			layoutRoot.SetPos(mouseX + m_MoveOffsetX, mouseY + m_MoveOffsetY);
+
+		if (m_DraggingSlider)
+			UpdateSliderFromMouse(mouseX);
 
 		if (m_Dragging)
 		{
