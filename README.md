@@ -55,11 +55,7 @@ Every change applies instantly to zombies already in the world and is saved to *
 Version 1.0 is still available if you prefer the classic setup with its pre-colored zombie classes: [Glowing Zombie Eyes 1.0](https://steamcommunity.com/sharedfiles/filedetails/?id=2466713208)
 
 ## Can I repack it?
-No, and you shouldn't need to. Everything is configured in game and saved on your server, so there is nothing to unpack or edit. If you'd like to view the source, come say hi on our Discord and you can get access there.
-
-## Source code
-
-The source is available through our Discord. Come say hi and you can get access there.
+You don't need to. Everything is configurable in game through the mod, and when I update it you get the updates instantly. That said, you're still free to repack it. The source is on GitHub: [github.com/DayZ-n-Chill/DZNC_Zombies](https://github.com/DayZ-n-Chill/DZNC_Zombies)
 
 ## Support
 Need help? Find us on Discord: [discord.gg/dayznchill](https://discord.gg/dayznchill)
