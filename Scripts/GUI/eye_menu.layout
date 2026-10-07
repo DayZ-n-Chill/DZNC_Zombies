@@ -1,7 +1,7 @@
 PanelWidgetClass DZNC_EyeMenuRoot {
  color 0.11 0.11 0.12 0.97
  position 40 40
- size 560 703
+ size 560 718
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -98,8 +98,8 @@ ButtonWidgetClass Close {
 }
 ButtonWidgetClass FilterAll {
  color 0 0 0 0
- position 16 59
- size 262 34
+ position 16 63
+ size 262 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -120,7 +120,7 @@ ButtonWidgetClass FilterAll {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 260 32
+   size 260 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -146,8 +146,8 @@ ButtonWidgetClass FilterAll {
 }
 ButtonWidgetClass FilterGlowing {
  color 0 0 0 0
- position 282 59
- size 262 34
+ position 282 63
+ size 262 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -168,7 +168,7 @@ ButtonWidgetClass FilterGlowing {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 260 32
+   size 260 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -195,8 +195,8 @@ ButtonWidgetClass FilterGlowing {
 PanelWidgetClass SearchBorder {
  ignorepointer 1
  color 0.32 0.32 0.34 1
- position 16 101
- size 528 34
+ position 16 103
+ size 528 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -206,8 +206,8 @@ PanelWidgetClass SearchBorder {
 PanelWidgetClass SearchBg {
  ignorepointer 1
  color 0.13 0.13 0.14 1
- position 17 102
- size 526 32
+ position 17 104
+ size 526 30
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -217,8 +217,8 @@ PanelWidgetClass SearchBg {
 TextWidgetClass SearchHint {
  ignorepointer 1
  color 0.55 0.55 0.57 1
- position 30 101
- size 500 34
+ position 30 103
+ size 500 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -231,8 +231,8 @@ TextWidgetClass SearchHint {
  "text valign" center
 }
 EditBoxWidgetClass SearchBox {
- position 30 101
- size 500 34
+ position 30 103
+ size 500 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -244,7 +244,7 @@ EditBoxWidgetClass SearchBox {
 PanelWidgetClass ListHeaderBg {
  ignorepointer 1
  color 0.15 0.15 0.16 1
- position 16 143
+ position 16 147
  size 528 22
  hexactpos 1
  vexactpos 1
@@ -255,7 +255,7 @@ PanelWidgetClass ListHeaderBg {
 TextWidgetClass ListHeaderZombie {
  ignorepointer 1
  color 0.7 0.7 0.72 1
- position 26 143
+ position 26 147
  size 300 22
  hexactpos 1
  vexactpos 1
@@ -271,7 +271,7 @@ TextWidgetClass ListHeaderZombie {
 TextWidgetClass ListHeaderEyes {
  ignorepointer 1
  color 0.7 0.7 0.72 1
- position 375 143
+ position 375 147
  size 160 22
  hexactpos 1
  vexactpos 1
@@ -286,8 +286,8 @@ TextWidgetClass ListHeaderEyes {
 }
 TextListboxWidgetClass ZombieList {
  clipchildren 1
- position 16 165
- size 528 138
+ position 16 169
+ size 528 104
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -295,14 +295,14 @@ TextListboxWidgetClass ZombieList {
  style Default
  "title visible" 0
  colums "Zombie;68;Eyes;32;"
- lines 6
- font "gui/fonts/Metron16"
+ lines 4
+ font "gui/fonts/Metron22"
 }
 TextWidgetClass SelectedTitle {
  ignorepointer 1
  color 0.75 0.75 0.77 1
- position 16 311
- size 180 20
+ position 16 289
+ size 180 18
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -317,7 +317,7 @@ TextWidgetClass SelectedTitle {
 PanelWidgetClass SelectedRule {
  ignorepointer 1
  color 0.3 0.3 0.32 1
- position 196 321
+ position 196 298
  size 348 1
  hexactpos 1
  vexactpos 1
@@ -327,8 +327,8 @@ PanelWidgetClass SelectedRule {
 }
 ButtonWidgetClass ListModeVanilla {
  color 0 0 0 0
- position 16 337
- size 128 36
+ position 16 315
+ size 128 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -349,7 +349,7 @@ ButtonWidgetClass ListModeVanilla {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 126 34
+   size 126 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -375,8 +375,8 @@ ButtonWidgetClass ListModeVanilla {
 }
 ButtonWidgetClass ListModeGlow {
  color 0 0 0 0
- position 144 337
- size 128 36
+ position 144 315
+ size 128 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -397,7 +397,7 @@ ButtonWidgetClass ListModeGlow {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 126 34
+   size 126 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -423,8 +423,8 @@ ButtonWidgetClass ListModeGlow {
 }
 ButtonWidgetClass ListColorPicker {
  color 0 0 0 0
- position 284 337
- size 260 36
+ position 284 315
+ size 260 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -445,7 +445,7 @@ ButtonWidgetClass ListColorPicker {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 258 34
+   size 258 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -455,7 +455,7 @@ ButtonWidgetClass ListColorPicker {
   PanelWidgetClass ListColorSwatch {
    ignorepointer 1
    color 1 1 0 1
-   position 12 8
+   position 12 6
    size 20 20
    hexactpos 1
    vexactpos 1
@@ -466,7 +466,7 @@ ButtonWidgetClass ListColorPicker {
   TextWidgetClass ListColorName {
    ignorepointer 1
    position 44 0
-   size 170 36
+   size 170 32
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -481,7 +481,7 @@ ButtonWidgetClass ListColorPicker {
   ImageWidgetClass ListColorPicker_chevron {
    ignorepointer 1
    color 0.85 0.85 0.87 1
-   position 230 11
+   position 230 9
    size 14 14
    hexactpos 1
    vexactpos 1
@@ -496,8 +496,8 @@ ButtonWidgetClass ListColorPicker {
 }
 ButtonWidgetClass ListApplyFamily {
  color 0 0 0 0
- position 16 381
- size 528 34
+ position 16 355
+ size 528 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -518,7 +518,7 @@ ButtonWidgetClass ListApplyFamily {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 526 32
+   size 526 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -545,8 +545,8 @@ ButtonWidgetClass ListApplyFamily {
 TextWidgetClass BulkTitle {
  ignorepointer 1
  color 0.75 0.75 0.77 1
- position 16 423
- size 124 20
+ position 16 403
+ size 124 18
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -561,7 +561,7 @@ TextWidgetClass BulkTitle {
 PanelWidgetClass BulkRule {
  ignorepointer 1
  color 0.3 0.3 0.32 1
- position 140 433
+ position 140 412
  size 404 1
  hexactpos 1
  vexactpos 1
@@ -571,8 +571,8 @@ PanelWidgetClass BulkRule {
 }
 ButtonWidgetClass BulkColorPicker {
  color 0 0 0 0
- position 16 449
- size 260 36
+ position 16 429
+ size 260 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -593,7 +593,7 @@ ButtonWidgetClass BulkColorPicker {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 258 34
+   size 258 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -603,7 +603,7 @@ ButtonWidgetClass BulkColorPicker {
   PanelWidgetClass BulkColorSwatch {
    ignorepointer 1
    color 1 1 0 1
-   position 12 8
+   position 12 6
    size 20 20
    hexactpos 1
    vexactpos 1
@@ -614,7 +614,7 @@ ButtonWidgetClass BulkColorPicker {
   TextWidgetClass BulkColorName {
    ignorepointer 1
    position 44 0
-   size 170 36
+   size 170 32
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -629,7 +629,7 @@ ButtonWidgetClass BulkColorPicker {
   ImageWidgetClass BulkColorPicker_chevron {
    ignorepointer 1
    color 0.85 0.85 0.87 1
-   position 230 11
+   position 230 9
    size 14 14
    hexactpos 1
    vexactpos 1
@@ -644,8 +644,8 @@ ButtonWidgetClass BulkColorPicker {
 }
 ButtonWidgetClass SetAll {
  color 0 0 0 0
- position 284 449
- size 260 36
+ position 284 429
+ size 260 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -681,8 +681,8 @@ ButtonWidgetClass SetAll {
 }
 ButtonWidgetClass RandomizeAll {
  color 0 0 0 0
- position 16 493
- size 260 34
+ position 16 469
+ size 260 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -703,7 +703,7 @@ ButtonWidgetClass RandomizeAll {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 258 32
+   size 258 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -729,8 +729,8 @@ ButtonWidgetClass RandomizeAll {
 }
 ButtonWidgetClass ResetAll {
  color 0 0 0 0
- position 284 493
- size 260 34
+ position 284 469
+ size 260 32
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -751,7 +751,7 @@ ButtonWidgetClass ResetAll {
    ignorepointer 1
    color 0.13 0.13 0.14 1
    position 1 1
-   size 258 32
+   size 258 30
    hexactpos 1
    vexactpos 1
    hexactsize 1
@@ -761,7 +761,7 @@ ButtonWidgetClass ResetAll {
   ImageWidgetClass ResetAll_icon {
    ignorepointer 1
    color 0.85 0.12 0.2 1
-   position 30 8
+   position 30 7
    size 18 18
    hexactpos 1
    vexactpos 1
@@ -791,8 +791,8 @@ ButtonWidgetClass ResetAll {
 }
 ButtonWidgetClass CrazyMode {
  color 0 0 0 0
- position 16 535
- size 528 34
+ position 16 517
+ size 528 38
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -816,7 +816,7 @@ ButtonWidgetClass CrazyMode {
   TextWidgetClass CrazyMode_sub {
    ignorepointer 1
    color 0.6 0.6 0.62 1
-   position 0 20
+   position 0 24
    size 400 14
    hexactpos 1
    vexactpos 1
@@ -832,7 +832,7 @@ ButtonWidgetClass CrazyMode {
   ImageWidgetClass CrazyMode_trackL {
    ignorepointer 1
    color 0.3 0.3 0.32 1
-   position 478 4
+   position 478 6
    size 26 26
    hexactpos 1
    vexactpos 1
@@ -846,7 +846,7 @@ ButtonWidgetClass CrazyMode {
   ImageWidgetClass CrazyMode_trackR {
    ignorepointer 1
    color 0.3 0.3 0.32 1
-   position 502 4
+   position 502 6
    size 26 26
    hexactpos 1
    vexactpos 1
@@ -860,7 +860,7 @@ ButtonWidgetClass CrazyMode {
   PanelWidgetClass CrazyMode_trackC {
    ignorepointer 1
    color 0.3 0.3 0.32 1
-   position 491 4
+   position 491 6
    size 24 26
    hexactpos 1
    vexactpos 1
@@ -871,7 +871,7 @@ ButtonWidgetClass CrazyMode {
   ImageWidgetClass CrazyMode_knob {
    ignorepointer 1
    color 1 1 1 1
-   position 481 7
+   position 481 9
    size 20 20
    hexactpos 1
    vexactpos 1
@@ -886,8 +886,8 @@ ButtonWidgetClass CrazyMode {
 }
 ButtonWidgetClass FadeOnDeath {
  color 0 0 0 0
- position 16 575
- size 528 34
+ position 16 567
+ size 528 38
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -911,7 +911,7 @@ ButtonWidgetClass FadeOnDeath {
   TextWidgetClass FadeOnDeath_sub {
    ignorepointer 1
    color 0.6 0.6 0.62 1
-   position 0 20
+   position 0 24
    size 400 14
    hexactpos 1
    vexactpos 1
@@ -927,7 +927,7 @@ ButtonWidgetClass FadeOnDeath {
   ImageWidgetClass FadeOnDeath_trackL {
    ignorepointer 1
    color 0.3 0.3 0.32 1
-   position 478 4
+   position 478 6
    size 26 26
    hexactpos 1
    vexactpos 1
@@ -941,7 +941,7 @@ ButtonWidgetClass FadeOnDeath {
   ImageWidgetClass FadeOnDeath_trackR {
    ignorepointer 1
    color 0.3 0.3 0.32 1
-   position 502 4
+   position 502 6
    size 26 26
    hexactpos 1
    vexactpos 1
@@ -955,7 +955,7 @@ ButtonWidgetClass FadeOnDeath {
   PanelWidgetClass FadeOnDeath_trackC {
    ignorepointer 1
    color 0.3 0.3 0.32 1
-   position 491 4
+   position 491 6
    size 24 26
    hexactpos 1
    vexactpos 1
@@ -966,7 +966,7 @@ ButtonWidgetClass FadeOnDeath {
   ImageWidgetClass FadeOnDeath_knob {
    ignorepointer 1
    color 1 1 1 1
-   position 481 7
+   position 481 9
    size 20 20
    hexactpos 1
    vexactpos 1
@@ -981,8 +981,8 @@ ButtonWidgetClass FadeOnDeath {
 }
 TextWidgetClass BrightnessTitle {
  ignorepointer 1
- position 16 617
- size 300 20
+ position 16 621
+ size 300 18
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -996,8 +996,8 @@ TextWidgetClass BrightnessTitle {
 }
 TextWidgetClass BrightnessValue {
  ignorepointer 1
- position 344 617
- size 200 20
+ position 344 621
+ size 200 18
  hexactpos 1
  vexactpos 1
  hexactsize 1
@@ -1010,7 +1010,7 @@ TextWidgetClass BrightnessValue {
  "text valign" center
 }
 FrameWidgetClass BrightnessSlider {
- position 16 641
+ position 16 647
  size 528 20
  hexactpos 1
  vexactpos 1
@@ -1058,7 +1058,7 @@ FrameWidgetClass BrightnessSlider {
 PanelWidgetClass FooterRule {
  ignorepointer 1
  color 0.3 0.3 0.32 1
- position 16 669
+ position 16 679
  size 528 1
  hexactpos 1
  vexactpos 1
@@ -1068,8 +1068,8 @@ PanelWidgetClass FooterRule {
 }
 TextWidgetClass Summary {
  ignorepointer 1
- position 16 673
- size 528 24
+ position 16 688
+ size 528 22
  hexactpos 1
  vexactpos 1
  hexactsize 1

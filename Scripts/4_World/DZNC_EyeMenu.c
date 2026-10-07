@@ -35,7 +35,7 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	static const float SLIDER_KNOB = 18;
 	static const float SWITCH_KNOB_OFF_X = 481;
 	static const float SWITCH_KNOB_ON_X = 505;
-	static const float SWITCH_KNOB_Y = 7;
+	static const float SWITCH_KNOB_Y = 9;
 	static const int POPUP_SELECTED = 0;
 	static const int POPUP_BULK = 1;
 
@@ -62,6 +62,7 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	protected float m_RotateSendTimer;
 	protected bool m_PreviewPending;
 	protected int m_PopupTarget;
+	protected Camera m_FrozenCamera;
 
 	protected ButtonWidget m_FilterAll;
 	protected ButtonWidget m_FilterGlowing;
@@ -152,11 +153,17 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		return layoutRoot;
 	}
 
+	void ~DZNC_EyeMenu()
+	{
+		ReleaseCamera();
+	}
+
 	override void OnShow()
 	{
 		super.OnShow();
 		GetGame().GetMission().AddActiveInputExcludes({"menu"});
 		GetGame().GetUIManager().ShowUICursor(true);
+		FreezeCamera();
 	}
 
 	override void OnHide()
@@ -164,10 +171,42 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		super.OnHide();
 		GetGame().GetMission().RemoveActiveInputExcludes({"menu"}, true);
 		GetGame().GetUIManager().ShowUICursor(false);
+		ReleaseCamera();
 
 		// The server removes the preview zombie it spawned for us.
 		ScriptRPC rpc = new ScriptRPC();
 		rpc.Send(GetGame().GetPlayer(), DZNC_EyeRPC.CLOSE_PREVIEW, true);
+	}
+
+	// Swaps the player's camera for a client-only static one at the exact same spot, direction and field of
+	// view, so head bob and fidgets can't move the view while the preview zombie is framed. Same calls as
+	// the vanilla intro scene camera; turning it off hands the view back to the player's own camera.
+	protected void FreezeCamera()
+	{
+		if (m_FrozenCamera)
+			return;
+
+		vector camPos = GetGame().GetCurrentCameraPosition();
+		vector camDir = GetGame().GetCurrentCameraDirection();
+		float fov = Camera.GetCurrentFOV();
+		m_FrozenCamera = Camera.Cast(GetGame().CreateObject("staticcamera", camPos, true));
+		if (!m_FrozenCamera)
+			return;
+
+		m_FrozenCamera.SetPosition(camPos);
+		m_FrozenCamera.LookAt(camPos + camDir * 10);
+		m_FrozenCamera.SetFOV(fov);
+		m_FrozenCamera.SetActive(true);
+	}
+
+	protected void ReleaseCamera()
+	{
+		if (!m_FrozenCamera)
+			return;
+
+		m_FrozenCamera.SetActive(false);
+		GetGame().ObjectDelete(m_FrozenCamera);
+		m_FrozenCamera = null;
 	}
 
 	void SetColors(array<int> colors, int intensity, int crazy, int fade)
@@ -722,6 +761,14 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	override void Update(float timeslice)
 	{
 		super.Update(timeslice);
+
+		// Never leave a dead or missing player looking through the frozen camera.
+		Man player = GetGame().GetPlayer();
+		if (!player || !player.IsAlive())
+		{
+			Close();
+			return;
+		}
 
 		if (m_ResetConfirmTimer > 0)
 		{
