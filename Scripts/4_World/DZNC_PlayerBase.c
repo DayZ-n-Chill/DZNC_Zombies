@@ -147,7 +147,7 @@ modded class PlayerBase
 
 		m_DZNC_PreviewBaseYaw = yaw;
 		m_DZNC_PreviewZombie.SetOrientation(Vector(m_DZNC_PreviewBaseYaw, 0, 0));
-		m_DZNC_PreviewZombie.GetAIAgent().SetKeepInIdle(true);
+		m_DZNC_PreviewZombie.DZNC_HoldUpright();
 	}
 
 	// Yaw is relative to facing the admin's camera, so 0 always means "looking at me".

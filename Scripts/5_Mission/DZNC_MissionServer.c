@@ -57,7 +57,7 @@ modded class MissionServer
 			vector toAdmin = origin - pos;
 			toAdmin[1] = 0;
 			zombie.SetOrientation(Vector(toAdmin.VectorToAngles()[0], 0, 0));
-			zombie.GetAIAgent().SetKeepInIdle(true);
+			zombie.DZNC_HoldUpright();
 		}
 
 		if (end < total)

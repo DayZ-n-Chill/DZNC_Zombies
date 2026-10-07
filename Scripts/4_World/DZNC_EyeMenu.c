@@ -12,12 +12,17 @@ class DZNC_EyeMenu extends UIScriptedMenu
 	// Preview placement: zombie height in meters, how near and far it may stand from the camera,
 	// and the part of the screen height (top and bottom, as fractions) it must fit in.
 	static const float PREVIEW_HEIGHT = 1.85;
-	static const float PREVIEW_MIN_DISTANCE = 1.5;
+	static const float PREVIEW_MIN_DISTANCE = 1.0;
 	static const float PREVIEW_MAX_DISTANCE = 12;
-	static const float PREVIEW_DISTANCE_STEP = 1.08;
-	static const float PREVIEW_TOP = 0.08;
-	static const float PREVIEW_BOTTOM = 0.92;
+	static const float PREVIEW_DISTANCE_STEP = 1.05;
+	static const float PREVIEW_TOP = 0.26;
+	static const float PREVIEW_BOTTOM = 0.93;
 	static const float PREVIEW_MAX_ANGLE = 1.4;
+	// Half the zombie's on-screen width as a share of its on-screen height, plus a gap, used to keep it clear of the menu.
+	static const float PREVIEW_HALF_WIDTH = 0.2;
+	static const float PREVIEW_PANEL_GAP = 20;
+	// The menu opens on the left, this share of the screen width from the edge, vertically centred.
+	static const float PANEL_LEFT = 0.05;
 	static const int INTENSITY_MIN = 1;
 	static const int INTENSITY_MAX = 10;
 
@@ -99,6 +104,12 @@ class DZNC_EyeMenu extends UIScriptedMenu
 		m_BrightnessValue = TextWidget.Cast(layoutRoot.FindAnyWidget("BrightnessValue"));
 		m_BrightnessSlider.SetMinMax(INTENSITY_MIN, INTENSITY_MAX);
 		m_BrightnessSlider.SetStep(1);
+
+		int screenW, screenH;
+		GetScreenSize(screenW, screenH);
+		float panelW, panelH;
+		layoutRoot.GetSize(panelW, panelH);
+		layoutRoot.SetPos(screenW * PANEL_LEFT, Math.Max(0, (screenH - panelH) * 0.5));
 		return layoutRoot;
 	}
 
@@ -317,9 +328,15 @@ class DZNC_EyeMenu extends UIScriptedMenu
 
 		int screenW, screenH;
 		GetScreenSize(screenW, screenH);
-		float targetX = screenW * 0.5;
 		float topY = screenH * PREVIEW_TOP;
 		float bottomY = screenH * PREVIEW_BOTTOM;
+
+		// Screen centre, unless that would put the zombie under the menu; then just right of it.
+		float panelX, panelY, panelW, panelH;
+		layoutRoot.GetScreenPos(panelX, panelY);
+		layoutRoot.GetScreenSize(panelW, panelH);
+		float clearX = panelX + panelW + PREVIEW_PANEL_GAP + (bottomY - topY) * PREVIEW_HALF_WIDTH;
+		float targetX = Math.Max(screenW * 0.5, clearX);
 
 		// Walk outward from the camera until the whole zombie fits the screen: the first fit is the biggest one.
 		// Projecting with the engine's own camera covers field of view, aspect ratio, pitch and third person alike.

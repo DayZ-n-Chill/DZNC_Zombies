@@ -13,6 +13,11 @@ modded class ZombieBase
 	protected int m_DZNC_AppliedEyeIntensity = -1;
 	protected string m_DZNC_SettingsKey;
 	protected bool m_DZNC_SettingsKeyResolved;
+	// Server only. Preview and lineup zombies stand still in the calm upright idle instead of reacting to players.
+	protected bool m_DZNC_HoldUpright;
+
+	static const int DZNC_UPRIGHT_STANCE = 0;
+	static const int DZNC_CALM_IDLE = 0;
 
 	override void Init()
 	{
@@ -120,6 +125,29 @@ modded class ZombieBase
 					GetGame().ObjectDelete(worn);
 			}
 		}
+	}
+
+	// Freezes the zombie in place in its calm standing idle. Move command values replicate from the server.
+	void DZNC_HoldUpright()
+	{
+		m_DZNC_HoldUpright = true;
+		m_StanceVariation = DZNC_UPRIGHT_STANCE;
+		GetAIAgent().SetKeepInIdle(true);
+	}
+
+	// Runs before the vanilla mind state, vault and fight handling, which would otherwise switch to the alerted idle.
+	override bool ModCommandHandlerInside(float pDt, int pCurrentCommandID, bool pCurrentCommandFinished)
+	{
+		if (!m_DZNC_HoldUpright)
+			return super.ModCommandHandlerInside(pDt, pCurrentCommandID, pCurrentCommandFinished);
+
+		DayZInfectedCommandMove moveCommand = GetCommand_Move();
+		if (moveCommand && !moveCommand.IsTurning())
+		{
+			moveCommand.SetStanceVariation(DZNC_UPRIGHT_STANCE);
+			moveCommand.SetIdleState(DZNC_CALM_IDLE);
+		}
+		return true;
 	}
 
 	override void OnVariablesSynchronized()
